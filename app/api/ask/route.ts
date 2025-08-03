@@ -14,6 +14,7 @@ export async function POST(req: Request) {
     }
 
     const result = await callGroq(messages);
+    console.log("AI Response:", result);
     return NextResponse.json({ result });
   } catch (err: any) {
     console.error("API route error:", err);
