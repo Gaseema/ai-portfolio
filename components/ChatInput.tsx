@@ -23,7 +23,7 @@ export default function ChatInput({
     >
       <input
         type="text"
-        className="flex-1 bg-transparent outline-none text-white placeholder-gray-500"
+        className="flex-1 bg-transparent outline-none text-white placeholder-gray-500 pb-2"
         placeholder="Ask me anything..."
         value={input}
         onChange={(e) => setInput(e.target.value)}

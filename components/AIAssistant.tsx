@@ -16,7 +16,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import ProjectShowcase from "./ProjectShowcase";
 import ContactCard from "./ContactCard";
-import AnimatedOrb from "./AnimatedOrb";
 
 interface Message {
   role: "user" | "assistant";
@@ -354,8 +353,6 @@ export default function AIAssistant({
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
             </div>
           </div>
-
-          <AnimatedOrb size="md" isActive={loading} />
         </div>
 
         {/* Messages Area - with bottom padding for fixed input and quick questions */}
@@ -465,7 +462,7 @@ export default function AIAssistant({
         </div>
 
         {/* Fixed Bottom Section: Quick Questions + Input */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white/40 backdrop-blur-[50px] border-t border-white/30 shadow-2xl z-50 rounded-t-3xl">
+        <div className="fixed bottom-0 left-0 right-0 bg-white/40 backdrop-blur-[50px] border-t border-white/30 z-50 rounded-3xl mb-5">
           {/* Compact Quick Questions */}
           {showSuggestions && (
             <div className="px-6 py-2 border-b border-white/20 bg-white/20">
@@ -532,7 +529,7 @@ export default function AIAssistant({
           )}
 
           {/* Input Area */}
-          <div className="p-6 bg-white/30 rounded-b-3xl border-t border-white/10">
+          <div className="p-6 bg-white/30 border-t border-white/10">
             <div className="flex gap-3">
               <textarea
                 ref={inputRef}
