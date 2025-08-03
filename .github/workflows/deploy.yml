@@ -46,8 +46,12 @@ jobs:
           # Build the application
           npm run build
           
-          # Restart PM2 process (if using PM2)
-          pm2 restart ai-portfolio || pm2 start npm --name "ai-portfolio" -- start
+          # Set environment variables
+          export NODE_ENV=production
+          export PORT=3001
+          
+          # Restart PM2 process using ecosystem config
+          pm2 restart ai-portfolio || pm2 start ecosystem.config.json
           
           # Or restart Apache/Nginx if serving static files
           # sudo systemctl restart apache2
