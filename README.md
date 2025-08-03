@@ -237,7 +237,7 @@ ai-portfolio/
 
 ## 🚀 Deployment
 
-### Deploy to Vercel (Recommended)
+### Option 1: Deploy to Vercel (Recommended for beginners)
 
 1. Push your code to GitHub
 2. Visit [Vercel](https://vercel.com)
@@ -245,12 +245,65 @@ ai-portfolio/
 4. Add your `GROQ_API_KEY` in Environment Variables
 5. Deploy!
 
+### Option 2: Deploy to AWS Lightsail (Self-hosted)
+
+For automatic deployment to your Lightsail server when pushing to main:
+
+#### 1. Server Setup
+Run this on your Lightsail instance:
+
+```bash
+# Download and run the setup script
+wget https://raw.githubusercontent.com/Gaseema/ai-portfolio/main/deployment/setup-server.sh
+chmod +x setup-server.sh
+./setup-server.sh
+```
+
+#### 2. Clone and Initial Setup
+```bash
+# Clone your repository
+cd /opt/bitnami/apache/htdocs/
+git clone https://github.com/Gaseema/ai-portfolio.git
+cd ai-portfolio
+
+# Install dependencies and build
+npm install
+npm run build
+
+# Start with PM2
+pm2 start npm --name "ai-portfolio" -- start
+pm2 save
+```
+
+#### 3. Configure GitHub Secrets
+In your GitHub repository settings, add these secrets:
+
+- `LIGHTSAIL_HOST`: Your Lightsail public IP
+- `LIGHTSAIL_USERNAME`: `bitnami` (or your SSH username)
+- `LIGHTSAIL_SSH_KEY`: Your private SSH key content
+- `LIGHTSAIL_PORT`: `22` (or your SSH port)
+
+#### 4. Deploy with One Command
+```bash
+# Use the deployment script
+./deploy.sh "Your commit message"
+```
+
+This will automatically:
+- Commit your changes
+- Push to main branch
+- Trigger GitHub Actions deployment
+- Update your Lightsail server
+
 ### Environment Variables for Production
 
-Make sure to add these in your deployment platform:
+Create `.env.production` on your server:
 
 ```env
 GROQ_API_KEY=your_groq_api_key_here
+NEXT_PUBLIC_APP_URL=https://your-domain.com
+NODE_ENV=production
+PORT=3000
 ```
 
 ## 🤝 Contributing

@@ -1,6 +1,5 @@
 /* Floating orb animations */
 @keyframes float-1 {
-
   0%,
   100% {
     transform: scale(1) translate(0, 0);
@@ -14,7 +13,6 @@
 }
 
 @keyframes float-2 {
-
   0%,
   100% {
     transform: scale(1) translate(0, 0);
@@ -28,7 +26,6 @@
 }
 
 @keyframes float-3 {
-
   0%,
   100% {
     transform: scale(1) translate(0, 0);
@@ -160,7 +157,8 @@
 }
 
 @keyframes wiggle {
-  0%, 100% {
+  0%,
+  100% {
     transform: rotate(0deg);
   }
   25% {
