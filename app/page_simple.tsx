@@ -1,13 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import AIAssistant from "@/components/AIAssistant";
 
 export default function HomePage() {
   const [showChat, setShowChat] = useState(false);
   const [initialQuestion, setInitialQuestion] = useState<string>("");
-  const [orbPulse, setOrbPulse] = useState(false);
-  const orbRef = useRef<HTMLDivElement>(null);
 
   const handleQuestionClick = (question: string) => {
     setInitialQuestion(question);
@@ -22,32 +20,6 @@ export default function HomePage() {
     }
   };
 
-  // Add keyboard event listener for orb reaction
-  useEffect(() => {
-    const handleKeyPress = () => {
-      setOrbPulse(true);
-      if (orbRef.current) {
-        orbRef.current.style.transform = 'scale(1.2)';
-        orbRef.current.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 40px rgba(59, 130, 246, 0.5)';
-      }
-      setTimeout(() => {
-        setOrbPulse(false);
-        if (orbRef.current) {
-          orbRef.current.style.transform = 'scale(1)';
-          orbRef.current.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
-        }
-      }, 200);
-    };
-
-    if (!showChat) {
-      document.addEventListener('keydown', handleKeyPress);
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyPress);
-    };
-  }, [showChat]);
-
   const suggestedQuestions = [
     "Tell me about your experience",
     "What projects have you worked on?",
@@ -58,13 +30,22 @@ export default function HomePage() {
   ];
 
   return (
-    <main
-      className="min-h-screen text-slate-800 overflow-hidden font-inter relative"
-      style={{
-        backgroundImage:
-          "linear-gradient(135deg, rgb(253, 252, 251) 0%, rgb(226, 209, 195) 100%)",
-      }}
-    >
+    <>
+      {/* Google Fonts */}
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet"
+      />
+
+      <main
+        className="min-h-screen text-slate-800 overflow-hidden font-inter relative"
+        style={{
+          backgroundImage:
+            "linear-gradient(135deg, rgb(253, 252, 251) 0%, rgb(226, 209, 195) 100%)",
+        }}
+      >
         {/* Light Background Pattern */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-200/20 via-transparent to-orange-200/20"></div>
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#d97706_1px,transparent_1px),linear-gradient(to_bottom,#d97706_1px,transparent_1px)] bg-[size:60px_60px] opacity-[0.02]"></div>
@@ -79,64 +60,13 @@ export default function HomePage() {
           <div className="flex flex-col items-center justify-center min-h-screen px-4 relative z-10">
             {/* Hero Section */}
             <div className="text-center space-y-8 animate-fadeInUp">
-              {/* Availability Badge */}
-              <div className="inline-flex items-center gap-2 bg-green-100/80 text-green-800 px-4 py-2 rounded-full text-sm font-medium border border-green-200 mb-4">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                Available for hire
-              </div>
-              
               <h1 className="text-6xl font-bold bg-gradient-to-r from-slate-800 via-blue-800 to-blue-600 bg-clip-text text-transparent">
                 Hi, I'm Gaseema
               </h1>
               <p className="text-xl text-slate-600 max-w-2xl">
-                Senior Flutter & Full-Stack Engineer with 6+ years of
-                experience building secure, high-performing fintech and crypto
-                applications.
+                Ask me anything about my experience, projects, or skills. I'm an
+                AI-powered assistant that knows everything about Gaseema's work.
               </p>
-              
-              {/* GitHub-style Stats */}
-              <div className="flex flex-wrap justify-center gap-6 mt-8">
-                <div className="text-center bg-white/60 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-white/50 min-w-[120px]">
-                  <div className="text-2xl font-bold text-blue-600 mb-1">100K+</div>
-                  <div className="text-slate-500 text-sm font-medium">App Users</div>
-                </div>
-                <div className="text-center bg-white/60 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-white/50 min-w-[120px]">
-                  <div className="text-2xl font-bold text-green-600 mb-1">$1M+</div>
-                  <div className="text-slate-500 text-sm font-medium">Transactions</div>
-                </div>
-                <div className="text-center bg-white/60 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-white/50 min-w-[120px]">
-                  <div className="text-2xl font-bold text-purple-600 mb-1">6+</div>
-                  <div className="text-slate-500 text-sm font-medium">Years Experience</div>
-                </div>
-                <div className="text-center bg-white/60 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-white/50 min-w-[120px]">
-                  <div className="text-2xl font-bold text-yellow-600 mb-1">🇰🇪</div>
-                  <div className="text-slate-500 text-sm font-medium">Based in Kenya</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Central Interactive Orb */}
-            <div className="my-12 animate-fadeInUp animate-delay-300">
-              <div 
-                ref={orbRef}
-                className={`w-32 h-32 mx-auto bg-gradient-to-br from-white via-blue-50 to-blue-100 rounded-full flex items-center justify-center text-5xl shadow-2xl border border-white/50 cursor-pointer transition-all duration-500 hover:scale-110 hover:shadow-3xl animate-float-1 ${orbPulse ? 'animate-pulse' : ''}`}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.15)';
-                  e.currentTarget.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 30px rgba(59, 130, 246, 0.3)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                  e.currentTarget.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
-                }}
-                onClick={() => {
-                  const input = document.querySelector("input") as HTMLInputElement;
-                  if (input) {
-                    input.focus();
-                  }
-                }}
-              >
-                🤖
-              </div>
             </div>
 
             {/* Input Section */}
@@ -231,5 +161,6 @@ export default function HomePage() {
           </div>
         )}
       </main>
+    </>
   );
 }
