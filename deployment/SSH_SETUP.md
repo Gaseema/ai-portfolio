@@ -37,6 +37,7 @@ ssh -i ~/.ssh/lightsail_deploy bitnami@YOUR_LIGHTSAIL_IP
 ## 4. Add to GitHub Secrets
 
 1. Get your private key content:
+
 ```bash
 cat ~/.ssh/lightsail_deploy
 ```
@@ -61,6 +62,7 @@ cat ~/.ssh/lightsail_deploy
 ## 6. Troubleshooting
 
 ### Permission Denied
+
 ```bash
 # Check SSH key permissions
 chmod 600 ~/.ssh/lightsail_deploy
@@ -68,12 +70,14 @@ chmod 644 ~/.ssh/lightsail_deploy.pub
 ```
 
 ### Host Key Verification Failed
+
 ```bash
 # Add server to known hosts
 ssh-keyscan -H YOUR_LIGHTSAIL_IP >> ~/.ssh/known_hosts
 ```
 
 ### Connection Timeout
+
 - Check your Lightsail security groups/firewall
 - Ensure port 22 (SSH) is open
 - Verify your server's public IP address

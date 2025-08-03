@@ -250,6 +250,7 @@ ai-portfolio/
 For automatic deployment to your Lightsail server when pushing to main:
 
 #### 1. Server Setup
+
 Run this on your Lightsail instance:
 
 ```bash
@@ -260,6 +261,7 @@ chmod +x setup-server.sh
 ```
 
 #### 2. Clone and Initial Setup
+
 ```bash
 # Clone your repository
 cd /opt/bitnami/apache/htdocs/
@@ -276,6 +278,7 @@ pm2 save
 ```
 
 #### 3. Configure GitHub Secrets
+
 In your GitHub repository settings, add these secrets:
 
 - `LIGHTSAIL_HOST`: Your Lightsail public IP
@@ -284,12 +287,14 @@ In your GitHub repository settings, add these secrets:
 - `LIGHTSAIL_PORT`: `22` (or your SSH port)
 
 #### 4. Deploy with One Command
+
 ```bash
 # Use the deployment script
 ./deploy.sh "Your commit message"
 ```
 
 This will automatically:
+
 - Commit your changes
 - Push to main branch
 - Trigger GitHub Actions deployment

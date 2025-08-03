@@ -16,6 +16,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import ProjectShowcase from "./ProjectShowcase";
 import ContactCard from "./ContactCard";
+import VoiceOrb from "./VoiceOrb";
 
 interface Message {
   role: "user" | "assistant";
@@ -80,6 +81,9 @@ export default function AIAssistant({
   const [typingMessageIndex, setTypingMessageIndex] = useState<number | null>(
     null
   );
+  const [isOrbActive, setIsOrbActive] = useState(false);
+  const [isOrbListening, setIsOrbListening] = useState(false);
+  const [isUserTyping, setIsUserTyping] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(true);
   const [showProjectsAfterTyping, setShowProjectsAfterTyping] = useState<
     number | null
@@ -135,7 +139,10 @@ export default function AIAssistant({
 
       // Update messages and input immediately
       setInput("");
+      setIsUserTyping(false);
       setLoading(true);
+      setIsOrbActive(true);  // Active for thinking/loading
+      setIsOrbListening(false);
 
       // Add user message first
       setMessages((prev) => [...prev, userMessage]);
@@ -213,8 +220,12 @@ export default function AIAssistant({
               },
             ];
             setTypingMessageIndex(newMessages.length - 1);
+            // Switch to listening mode for typing animation
+            setIsOrbActive(false);
+            setIsOrbListening(true);
             return newMessages;
           });
+          // Don't set loading to false yet - wait for typing to complete
 
           // Project showcase is now handled inline with the message
         } else if (shouldShowContact) {
@@ -231,8 +242,12 @@ export default function AIAssistant({
               },
             ];
             setTypingMessageIndex(newMessages.length - 1);
+            // Switch to listening mode for typing animation
+            setIsOrbActive(false);
+            setIsOrbListening(true);
             return newMessages;
           });
+          // Don't set loading to false yet - wait for typing to complete
         } else {
           // Add regular assistant response with typing animation
           setMessages((prev) => {
@@ -246,8 +261,12 @@ export default function AIAssistant({
             ];
             // Trigger typing animation for the last message (assistant response)
             setTypingMessageIndex(newMessages.length - 1);
+            // Switch to listening mode for typing animation
+            setIsOrbActive(false);
+            setIsOrbListening(true);
             return newMessages;
           });
+          // Don't set loading to false yet - wait for typing to complete
         }
       } catch (error) {
         console.error("Error:", error);
@@ -263,10 +282,12 @@ export default function AIAssistant({
           ];
           // Trigger typing animation for error message too
           setTypingMessageIndex(newMessages.length - 1);
+          // Switch to listening mode for typing animation
+          setIsOrbActive(false);
+          setIsOrbListening(true);
           return newMessages;
         });
-      } finally {
-        setLoading(false);
+        // Don't set loading to false yet - wait for typing to complete
       }
     },
     [input, loading, messages]
@@ -306,7 +327,11 @@ export default function AIAssistant({
 
   // Auto-resize textarea
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInput(e.target.value);
+    const value = e.target.value;
+    setInput(value);
+
+    // Track user typing for orb animation
+    setIsUserTyping(value.length > 0);
 
     // Reset height to auto to get the scroll height
     e.target.style.height = "auto";
@@ -333,6 +358,7 @@ export default function AIAssistant({
 
   const handleSuggestionClick = (suggestion: string) => {
     setInput(suggestion);
+    setIsUserTyping(suggestion.length > 0);
     inputRef.current?.focus();
   };
 
@@ -343,14 +369,28 @@ export default function AIAssistant({
         className={`flex flex-col h-full bg-white/5 backdrop-blur-xl rounded-3xl ${className} relative overflow-hidden max-w-4xl w-full mx-4`}
       >
         {/* Header */}
-        <div className="flex items-center justify-end p-6 border-b border-white/10">
-          <div className="text-right mr-4">
-            <h1 className="font-semibold text-black text-lg tracking-tight">
-              Gaseema's Assistant
-            </h1>
-            <div className="flex items-center justify-end gap-2 mt-1">
-              <span className="text-sm text-slate-200 font-medium">Online</span>
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+        <div className="flex flex-col items-center p-6 border-b border-white/10">
+          {/* VoiceOrb at top center */}
+          <div className="mb-4">
+            <VoiceOrb
+              isActive={isOrbActive || isUserTyping}
+              isListening={isOrbListening}
+              className="scale-75"
+            />
+          </div>
+
+          {/* Header content */}
+          <div className="flex items-center gap-4">
+            <div className="text-center">
+              <h1 className="font-semibold text-black text-lg tracking-tight">
+                Gaseema's Assistant
+              </h1>
+              <div className="flex items-center justify-center gap-2 mt-1">
+                <span className="text-sm text-slate-200 font-medium">
+                  Online
+                </span>
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+              </div>
             </div>
           </div>
         </div>
@@ -382,6 +422,9 @@ export default function AIAssistant({
                         .trim()}
                       onComplete={() => {
                         setTypingMessageIndex(null);
+                        setLoading(false);
+                        setIsOrbActive(false);
+                        setIsOrbListening(false);
                         // Show projects after typing completes if this message has the trigger
                         if (message.content.includes("CHECK_OUT_MY_PROJECTS")) {
                           setShowProjectsAfterTyping(index);
@@ -436,23 +479,25 @@ export default function AIAssistant({
             </div>
           ))}
 
-          {/* Loading Animation */}
+          {/* Loading Animation with Wave Ellipsis */}
           {loading && (
             <div className="flex justify-start animate-fadeInUp">
-              <div className="bg-slate-100 text-slate-800 p-3 rounded-3xl rounded-bl-lg border border-slate-200 shadow-lg shadow-slate-200/50">
+              <div className="bg-slate-100/80 backdrop-blur-sm text-slate-800 p-4 rounded-3xl rounded-bl-lg border border-slate-200/50 shadow-lg">
                 <div className="flex items-center gap-2">
+                  <span className="text-sm text-slate-600 font-medium">
+                    Thinking
+                  </span>
                   <div className="flex gap-1">
-                    <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
+                    <div className="w-1 h-1 bg-slate-400 rounded-full animate-bounce"></div>
                     <div
-                      className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"
+                      className="w-1 h-1 bg-slate-400 rounded-full animate-bounce"
                       style={{ animationDelay: "0.1s" }}
                     ></div>
                     <div
-                      className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"
+                      className="w-1 h-1 bg-slate-400 rounded-full animate-bounce"
                       style={{ animationDelay: "0.2s" }}
                     ></div>
                   </div>
-                  <span className="text-sm text-slate-600">Thinking...</span>
                 </div>
               </div>
             </div>

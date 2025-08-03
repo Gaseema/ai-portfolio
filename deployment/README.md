@@ -5,6 +5,7 @@ This directory contains scripts to help with deployment to AWS Lightsail.
 ## Setup Instructions
 
 ### 1. Server Setup
+
 First, make sure your Lightsail server has the necessary tools:
 
 ```bash
@@ -28,6 +29,7 @@ sudo chown bitnami:bitnami /opt/bitnami/apache/htdocs/ai-portfolio
 ```
 
 ### 2. Initial Deployment
+
 Clone your repository on the server:
 
 ```bash
@@ -39,6 +41,7 @@ npm run build
 ```
 
 ### 3. GitHub Secrets Setup
+
 Add these secrets to your GitHub repository:
 
 1. Go to your GitHub repository
@@ -51,6 +54,7 @@ Add these secrets to your GitHub repository:
 - `LIGHTSAIL_PORT`: SSH port (usually `22`)
 
 ### 4. Environment Variables
+
 If your app needs environment variables, create a `.env.production` file on your server:
 
 ```bash
@@ -60,6 +64,7 @@ nano .env.production
 ```
 
 Add your production environment variables:
+
 ```
 GROQ_API_KEY=your_production_groq_key
 NEXT_PUBLIC_APP_URL=https://your-domain.com
@@ -68,6 +73,7 @@ NEXT_PUBLIC_APP_URL=https://your-domain.com
 ## Alternative Deployment Methods
 
 ### Method 1: Using PM2 (Recommended for Node.js apps)
+
 ```bash
 # Start the application with PM2
 pm2 start npm --name "ai-portfolio" -- start
@@ -76,6 +82,7 @@ pm2 startup
 ```
 
 ### Method 2: Static File Serving
+
 If you want to serve the built files statically:
 
 ```bash
@@ -91,6 +98,7 @@ sudo systemctl restart apache2
 ```
 
 ### Method 3: Using Nginx as Reverse Proxy
+
 If you prefer Nginx:
 
 ```bash
@@ -103,6 +111,7 @@ sudo nano /etc/nginx/sites-available/ai-portfolio
 ```
 
 Add this configuration:
+
 ```nginx
 server {
     listen 80;
@@ -139,6 +148,7 @@ sudo systemctl restart nginx
 4. **SSH Connection Issues**: Verify your SSH key and host settings
 
 ### Logs:
+
 ```bash
 # PM2 logs
 pm2 logs ai-portfolio

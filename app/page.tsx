@@ -3,15 +3,16 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import AIAssistant from "@/components/AIAssistant";
+import VoiceOrb from "@/components/VoiceOrb";
 
 export default function HomePage() {
   const [showChat, setShowChat] = useState(false);
   const [initialQuestion, setInitialQuestion] = useState<string>("");
   const [showTalentModal, setShowTalentModal] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
+  const [isOrbActive, setIsOrbActive] = useState(false);
+  const [isOrbListening, setIsOrbListening] = useState(false);
 
-  // Get time-based greeting
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good Morning";
@@ -20,15 +21,23 @@ export default function HomePage() {
   };
 
   const handleQuestionClick = (question: string) => {
-    setInitialQuestion(question);
-    setShowChat(true);
+    setIsOrbActive(true);
+    setTimeout(() => {
+      setInitialQuestion(question);
+      setShowChat(true);
+      setIsOrbActive(false);
+    }, 600);
   };
 
   const handleInputSubmit = (inputElement: HTMLInputElement) => {
     const question = inputElement.value.trim();
     if (question) {
-      setInitialQuestion(question);
-      setShowChat(true);
+      setIsOrbActive(true);
+      setTimeout(() => {
+        setInitialQuestion(question);
+        setShowChat(true);
+        setIsOrbActive(false);
+      }, 800);
     }
   };
 
@@ -49,26 +58,21 @@ export default function HomePage() {
           "linear-gradient(135deg, rgb(253, 252, 251) 0%, rgb(226, 209, 195) 100%)",
       }}
     >
-      {/* Light Background Pattern */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-200/20 via-transparent to-orange-200/20"></div>
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#d97706_1px,transparent_1px),linear-gradient(to_bottom,#d97706_1px,transparent_1px)] bg-[size:60px_60px] opacity-[0.02]"></div>
 
-      {/* Floating Orbs */}
       <div className="absolute top-20 left-20 w-72 h-72 bg-amber-200/20 rounded-full blur-3xl z-10 animate-float-1" />
       <div className="absolute bottom-20 right-20 w-96 h-96 bg-orange-200/20 rounded-full blur-3xl z-10 animate-float-2" />
       <div className="absolute top-1/2 left-1/3 w-48 h-48 bg-yellow-200/20 rounded-full blur-2xl animate-float-3" />
 
       {!showChat ? (
-        // Landing Page
         <div className="flex flex-col items-center justify-center min-h-screen px-4 relative z-10">
-          {/* Top Navigation - Only visible on landing page */}
           <motion.div
             className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-6"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            {/* Left side - Looking for talent button */}
             <motion.button
               onClick={() => setShowTalentModal(true)}
               className="bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 px-4 py-2 rounded-full font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 border border-slate-200 flex items-center gap-2"
@@ -79,7 +83,6 @@ export default function HomePage() {
               Looking for talent
             </motion.button>
 
-            {/* Right side - Info button */}
             <motion.button
               onClick={() => setShowInfoModal(true)}
               className="bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 p-2 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 border border-slate-200"
@@ -104,20 +107,42 @@ export default function HomePage() {
               </svg>
             </motion.button>
           </motion.div>
-          {/* Hero Section */}
+
           <motion.div
-            className="text-center space-y-8"
+            className="mt-8 flex justify-center"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+          >
+            <div 
+              onClick={() => {
+                const input = document.querySelector("input") as HTMLInputElement;
+                if (input) {
+                  input.focus();
+                }
+              }}
+            >
+              <VoiceOrb 
+                isActive={isOrbActive} 
+                isListening={isOrbListening}
+                className="cursor-pointer hover:scale-105 transition-transform duration-200"
+              />
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="text-center space-y-6 mt-8"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            transition={{ duration: 0.8, delay: 1.0 }}
           >
             <motion.h1
-              className="text-6xl font-bold bg-gradient-to-r from-slate-800 via-blue-800 to-blue-600 bg-clip-text text-transparent"
-              initial={{ opacity: 0, scale: 0.5 }}
+              className="text-5xl font-semibold text-slate-800 leading-tight"
+              initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{
                 duration: 0.8,
-                delay: 0.5,
+                delay: 1.2,
                 type: "spring",
                 stiffness: 100,
               }}
@@ -125,16 +150,15 @@ export default function HomePage() {
               {getGreeting()}, I'm Gaseema
             </motion.h1>
             <motion.p
-              className="text-xl text-slate-600 max-w-2xl mx-auto"
+              className="text-xl text-slate-600 max-w-2xl mx-auto font-medium"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.7 }}
+              transition={{ duration: 0.6, delay: 1.4 }}
             >
-              Flutter Developer with 6+ years building fintech apps. 🚀✨
+              Flutter Developer with 6+ years building fintech apps
             </motion.p>
           </motion.div>
 
-          {/* Input Section */}
           <motion.div
             className="mt-12 space-y-6 w-full max-w-md"
             initial={{ opacity: 0, y: 30 }}
@@ -151,25 +175,14 @@ export default function HomePage() {
                 type="text"
                 placeholder="Ask me anything..."
                 className="w-full px-6 py-4 bg-white/90 border border-slate-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-slate-800 placeholder-slate-500 shadow-lg"
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setIsTyping(value.length > 0);
-                }}
+                onFocus={() => setIsOrbListening(true)}
+                onBlur={() => setIsOrbListening(false)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     handleInputSubmit(e.currentTarget);
                     e.currentTarget.value = "";
-                    setIsTyping(false);
+                    e.currentTarget.blur();
                   }
-                }}
-                onBlur={(e) => {
-                  // Small delay to allow for potential submission
-                  setTimeout(() => {
-                    const input = e.currentTarget;
-                    if (input && input.value.length === 0) {
-                      setIsTyping(false);
-                    }
-                  }, 100);
                 }}
               />
               <motion.button
@@ -180,7 +193,6 @@ export default function HomePage() {
                   if (input) {
                     handleInputSubmit(input);
                     input.value = "";
-                    setIsTyping(false);
                   }
                 }}
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-500 to-blue-600 text-white p-3 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg"
@@ -203,7 +215,6 @@ export default function HomePage() {
               </motion.button>
             </motion.div>
 
-            {/* Suggested Questions */}
             <div className="space-y-4">
               <motion.p
                 className="text-sm text-slate-600 text-center"
@@ -214,7 +225,6 @@ export default function HomePage() {
                 Or try one of these:
               </motion.p>
 
-              {/* Pill Layout - Flexible width pills */}
               <motion.div
                 className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto px-4"
                 initial={{ opacity: 0 }}
@@ -250,36 +260,35 @@ export default function HomePage() {
           </motion.div>
         </div>
       ) : (
-        // Chat Interface
         <div className="h-screen relative z-10 animate-fadeIn">
-          <AIAssistant initialQuestion={initialQuestion} className="h-full" />
-
-          {/* Back Button */}
-          <button
-            onClick={() => {
-              setShowChat(false);
-              setInitialQuestion("");
-            }}
-            className="fixed top-6 left-6 z-50 bg-white/90 hover:bg-white text-slate-700 hover:text-slate-900 p-3 rounded-2xl transition-all duration-200 border border-slate-300/50 hover:border-slate-400 shadow-lg hover:shadow-xl backdrop-blur-sm"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          <div className="max-w-4xl mx-auto h-full relative">
+            <button
+              onClick={() => {
+                setShowChat(false);
+                setInitialQuestion("");
+              }}
+              className="absolute top-6 left-6 z-50 bg-white/90 hover:bg-white text-slate-700 hover:text-slate-900 p-3 rounded-2xl transition-all duration-200 border border-slate-300/50 hover:border-slate-400 shadow-lg hover:shadow-xl backdrop-blur-sm"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </button>
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+            
+            <AIAssistant initialQuestion={initialQuestion} className="h-full" />
+          </div>
         </div>
       )}
 
-      {/* Looking for Talent Modal */}
       {showTalentModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl animate-fadeIn">
@@ -423,7 +432,6 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Info Modal */}
       {showInfoModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl animate-fadeIn">
