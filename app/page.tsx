@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import AIAssistant from "@/components/AIAssistant";
 import VoiceOrb from "@/components/VoiceOrb";
@@ -12,6 +12,8 @@ export default function HomePage() {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [isOrbActive, setIsOrbActive] = useState(false);
   const [isOrbListening, setIsOrbListening] = useState(false);
+  const [orbPulse, setOrbPulse] = useState(false);
+  const orbRef = useRef<HTMLDivElement>(null);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -21,25 +23,53 @@ export default function HomePage() {
   };
 
   const handleQuestionClick = (question: string) => {
-    setIsOrbActive(true);
+    setOrbPulse(true);
     setTimeout(() => {
       setInitialQuestion(question);
       setShowChat(true);
-      setIsOrbActive(false);
+      setOrbPulse(false);
     }, 600);
   };
 
   const handleInputSubmit = (inputElement: HTMLInputElement) => {
     const question = inputElement.value.trim();
     if (question) {
-      setIsOrbActive(true);
+      setOrbPulse(true);
       setTimeout(() => {
         setInitialQuestion(question);
         setShowChat(true);
-        setIsOrbActive(false);
+        setOrbPulse(false);
       }, 800);
     }
   };
+
+  // Add keyboard event listener for orb reaction
+  useEffect(() => {
+    const handleKeyPress = () => {
+      setOrbPulse(true);
+      if (orbRef.current) {
+        orbRef.current.style.transform = "scale(1.2)";
+        orbRef.current.style.boxShadow =
+          "0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 0 30px rgba(59, 130, 246, 0.5)";
+      }
+      setTimeout(() => {
+        setOrbPulse(false);
+        if (orbRef.current) {
+          orbRef.current.style.transform = "scale(1)";
+          orbRef.current.style.boxShadow =
+            "0 10px 25px -5px rgba(0, 0, 0, 0.15)";
+        }
+      }, 200);
+    };
+
+    if (!showChat) {
+      document.addEventListener("keydown", handleKeyPress);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [showChat]);
 
   const suggestedQuestions = [
     { text: "Tell me about your experience", icon: "👨‍💻" },
@@ -73,24 +103,29 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
+            {/* Left side - Looking for talent */}
             <motion.button
               onClick={() => setShowTalentModal(true)}
               className="bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 px-4 py-2 rounded-full font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 border border-slate-200 flex items-center gap-2"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
             >
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               Looking for talent
             </motion.button>
 
+            {/* Right side - Info icon only */}
             <motion.button
               onClick={() => setShowInfoModal(true)}
               className="bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 p-2 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 border border-slate-200"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, rotate: -10 }}
-              animate={{ opacity: 1, rotate: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
             >
               <svg
                 className="w-5 h-5"
@@ -114,16 +149,18 @@ export default function HomePage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.8 }}
           >
-            <div 
+            <div
               onClick={() => {
-                const input = document.querySelector("input") as HTMLInputElement;
+                const input = document.querySelector(
+                  "input"
+                ) as HTMLInputElement;
                 if (input) {
                   input.focus();
                 }
               }}
             >
-              <VoiceOrb 
-                isActive={isOrbActive} 
+              <VoiceOrb
+                isActive={isOrbActive}
                 isListening={isOrbListening}
                 className="cursor-pointer hover:scale-105 transition-transform duration-200"
               />
@@ -261,29 +298,69 @@ export default function HomePage() {
         </div>
       ) : (
         <div className="h-screen relative z-10 animate-fadeIn">
-          <div className="max-w-4xl mx-auto h-full relative">
-            <button
-              onClick={() => {
-                setShowChat(false);
-                setInitialQuestion("");
-              }}
-              className="absolute top-6 left-6 z-50 bg-white/90 hover:bg-white text-slate-700 hover:text-slate-900 p-3 rounded-2xl transition-all duration-200 border border-slate-300/50 hover:border-slate-400 shadow-lg hover:shadow-xl backdrop-blur-sm"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+          {/* Transparent App Bar */}
+          <div className="fixed top-0 left-0 right-0 z-50 bg-white/30 backdrop-blur-md border-b border-white/20 p-4">
+            <div className="max-w-4xl mx-auto flex justify-between items-center">
+              {/* Left - Back Button */}
+              <button
+                onClick={() => {
+                  setShowChat(false);
+                  setInitialQuestion("");
+                }}
+                className="bg-white/90 hover:bg-white text-slate-700 hover:text-slate-900 p-3 rounded-2xl transition-all duration-200 border border-slate-300/50 hover:border-slate-400 shadow-lg hover:shadow-xl backdrop-blur-sm"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </button>
-            
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+
+              {/* Right - Gaseema's Assistant text + Small Orb */}
+              <div className="flex items-center gap-3">
+                <h2 className="text-lg font-semibold text-slate-800">
+                  Gaseema's Assistant
+                </h2>
+                <div
+                  ref={orbRef}
+                  className={`w-10 h-10 bg-gradient-to-br from-white via-blue-50 to-blue-100 rounded-full flex items-center justify-center text-sm shadow-lg border border-white/50 cursor-pointer transition-all duration-300 hover:scale-110 animate-float-1 ${
+                    orbPulse ? "animate-pulse" : ""
+                  }`}
+                  onClick={() => {
+                    const input = document.querySelector(
+                      "textarea"
+                    ) as HTMLTextAreaElement;
+                    if (input) {
+                      input.focus();
+                    }
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "scale(1.15)";
+                    e.currentTarget.style.boxShadow =
+                      "0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 0 20px rgba(59, 130, 246, 0.3)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                    e.currentTarget.style.boxShadow =
+                      "0 10px 25px -5px rgba(0, 0, 0, 0.15)";
+                  }}
+                >
+                  🤖
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Chat Content with top padding to account for app bar */}
+          <div className="pt-20 h-full">
             <AIAssistant initialQuestion={initialQuestion} className="h-full" />
           </div>
         </div>

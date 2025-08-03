@@ -141,8 +141,7 @@ export default function AIAssistant({
       setInput("");
       setIsUserTyping(false);
       setLoading(true);
-      setIsOrbActive(true);  // Active for thinking/loading
-      setIsOrbListening(false);
+      setIsOrbListening(true);
 
       // Add user message first
       setMessages((prev) => [...prev, userMessage]);
@@ -373,7 +372,7 @@ export default function AIAssistant({
           {/* VoiceOrb at top center */}
           <div className="mb-4">
             <VoiceOrb
-              isActive={isOrbActive || isUserTyping}
+              isActive={isOrbActive && !isUserTyping}
               isListening={isOrbListening}
               className="scale-75"
             />
