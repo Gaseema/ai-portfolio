@@ -366,33 +366,6 @@ export default function AIAssistant({
       <div
         className={`flex flex-col h-full bg-white/5 backdrop-blur-xl rounded-3xl ${className} relative overflow-hidden max-w-4xl w-full mx-4`}
       >
-        {/* Header */}
-        <div className="flex flex-col items-center p-6 border-b border-white/10">
-          {/* VoiceOrb at top center */}
-          <div className="mb-4">
-            <VoiceOrb
-              isActive={isOrbActive && !isUserTyping}
-              isListening={isOrbListening}
-              className="scale-75"
-            />
-          </div>
-
-          {/* Header content */}
-          <div className="flex items-center gap-4">
-            <div className="text-center">
-              <h1 className="font-semibold text-black text-lg tracking-tight">
-                Gaseema's Assistant
-              </h1>
-              <div className="flex items-center justify-center gap-2 mt-1">
-                <span className="text-sm text-slate-200 font-medium">
-                  Online
-                </span>
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Messages Area - with bottom padding for fixed input and quick questions */}
         <div className="flex-1 overflow-y-auto p-4 space-y-6 pb-48 messages-container">
           {/* Increased bottom padding to prevent overlap with quick questions and input */}
@@ -508,7 +481,7 @@ export default function AIAssistant({
         <div className="fixed bottom-0 left-0 right-0 bg-white/40 backdrop-blur-[50px] border-t border-white/30 z-50 rounded-3xl mb-5">
           {/* Compact Quick Questions */}
           {showSuggestions && (
-            <div className="px-6 py-2 border-b border-white/20 bg-white/20">
+            <div className="px-6 py-2 border-b border-white/20">
               <div className="flex items-center gap-2 mb-1">
                 <p className="text-xs text-slate-700 font-medium flex-shrink-0">
                   Quick questions:

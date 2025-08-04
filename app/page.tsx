@@ -351,15 +351,14 @@ export default function HomePage() {
                   />
                 </svg>
               </button>
-
-              {/* Right - VoiceOrb only */}
+              {/* Right - VoiceOrb only
               <div className="flex items-center gap-3">
                 <VoiceOrb
                   isActive={isOrbActive}
                   isListening={isOrbListening}
                   className="scale-75"
                 />
-              </div>
+              </div> */}
             </div>
           </div>
 
