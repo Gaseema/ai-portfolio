@@ -367,7 +367,7 @@ export default function AIAssistant({
         className={`flex flex-col h-full bg-white/5 backdrop-blur-xl rounded-3xl ${className} relative overflow-hidden max-w-4xl w-full mx-4`}
       >
         {/* Messages Area - with bottom padding for fixed input and quick questions */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-6 pb-48 messages-container">
+        <div className="flex-1 overflow-y-auto p-4 space-y-6 pb-[230px] messages-container">
           {/* Increased bottom padding to prevent overlap with quick questions and input */}
           {messages.map((message, index) => (
             <div
@@ -545,7 +545,7 @@ export default function AIAssistant({
           )}
 
           {/* Input Area */}
-          <div className="p-6 bg-white/30 border-t border-white/10">
+          <div className="p-6 border-t border-white/10">
             <div className="flex gap-3">
               <textarea
                 ref={inputRef}
