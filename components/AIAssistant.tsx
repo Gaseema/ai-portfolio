@@ -92,9 +92,15 @@ export default function AIAssistant({
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const initialQuestionSentRef = useRef<string>("");
 
-  // Auto-scroll to latest message (optimized)
+  // Auto-scroll to bottom like ChatGPT (optimized)
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const messagesContainer = document.querySelector(".messages-container");
+    if (messagesContainer) {
+      messagesContainer.scrollTo({
+        top: messagesContainer.scrollHeight,
+        behavior: "smooth",
+      });
+    }
   }, []);
 
   // Enhanced scrolling function for real-time updates (optimized)
@@ -109,16 +115,24 @@ export default function AIAssistant({
   }, []);
 
   useEffect(() => {
-    // Only auto-scroll when user sends a message, not during AI responses
+    // Auto-scroll to bottom when new messages are added (like ChatGPT)
     if (messages.length > 0) {
-      const lastMessage = messages[messages.length - 1];
-      if (lastMessage.role === "user") {
+      // Small delay to ensure message is rendered before scrolling
+      setTimeout(() => {
         scrollToBottom();
-      }
+      }, 100);
     }
-  }, [messages.length, scrollToBottom]); // Only trigger on message count change
+  }, [messages.length, scrollToBottom]); // Trigger on every new message
 
-  // Remove auto-scroll when loading changes - let user control scroll during AI responses
+  // Auto-scroll to bottom when assistant finishes typing
+  useEffect(() => {
+    if (!loading && typingMessageIndex === null) {
+      // Scroll to bottom when AI finishes responding
+      setTimeout(() => {
+        scrollToBottom();
+      }, 200);
+    }
+  }, [loading, typingMessageIndex, scrollToBottom]);  // Remove auto-scroll when loading changes - let user control scroll during AI responses
   // useEffect(() => {
   //   if (loading) {
   //     const timeoutId = setTimeout(smoothScrollToBottom, 100);
