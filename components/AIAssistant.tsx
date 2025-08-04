@@ -219,12 +219,12 @@ export default function AIAssistant({
               },
             ];
             setTypingMessageIndex(newMessages.length - 1);
-            // Switch to listening mode for typing animation
+            // Switch to listening mode for typing animation and stop loading
             setIsOrbActive(false);
             setIsOrbListening(true);
+            setLoading(false); // Stop loading when typing starts
             return newMessages;
           });
-          // Don't set loading to false yet - wait for typing to complete
 
           // Project showcase is now handled inline with the message
         } else if (shouldShowContact) {
@@ -241,12 +241,12 @@ export default function AIAssistant({
               },
             ];
             setTypingMessageIndex(newMessages.length - 1);
-            // Switch to listening mode for typing animation
+            // Switch to listening mode for typing animation and stop loading
             setIsOrbActive(false);
             setIsOrbListening(true);
+            setLoading(false); // Stop loading when typing starts
             return newMessages;
           });
-          // Don't set loading to false yet - wait for typing to complete
         } else {
           // Add regular assistant response with typing animation
           setMessages((prev) => {
@@ -260,12 +260,12 @@ export default function AIAssistant({
             ];
             // Trigger typing animation for the last message (assistant response)
             setTypingMessageIndex(newMessages.length - 1);
-            // Switch to listening mode for typing animation
+            // Switch to listening mode for typing animation and stop loading
             setIsOrbActive(false);
             setIsOrbListening(true);
+            setLoading(false); // Stop loading when typing starts
             return newMessages;
           });
-          // Don't set loading to false yet - wait for typing to complete
         }
       } catch (error) {
         console.error("Error:", error);
@@ -281,12 +281,12 @@ export default function AIAssistant({
           ];
           // Trigger typing animation for error message too
           setTypingMessageIndex(newMessages.length - 1);
-          // Switch to listening mode for typing animation
+          // Switch to listening mode for typing animation and stop loading
           setIsOrbActive(false);
           setIsOrbListening(true);
+          setLoading(false); // Stop loading when typing starts
           return newMessages;
         });
-        // Don't set loading to false yet - wait for typing to complete
       }
     },
     [input, loading, messages]
@@ -356,9 +356,8 @@ export default function AIAssistant({
   ];
 
   const handleSuggestionClick = (suggestion: string) => {
-    setInput(suggestion);
-    setIsUserTyping(suggestion.length > 0);
-    inputRef.current?.focus();
+    // Automatically send the suggestion instead of just filling the input
+    handleSend(suggestion);
   };
 
   return (
