@@ -2,13 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import AIAssistant from "@/components/AIAssistant";
+import { useRouter } from "next/navigation";
 import VoiceOrb from "@/components/VoiceOrb";
 import { useGitHubStars } from "@/hooks/useGitHubStars";
 
 export default function HomePage() {
-  const [showChat, setShowChat] = useState(false);
-  const [initialQuestion, setInitialQuestion] = useState<string>("");
   const [showTalentModal, setShowTalentModal] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [isOrbActive, setIsOrbActive] = useState(false);
@@ -16,6 +14,7 @@ export default function HomePage() {
   const [orbPulse, setOrbPulse] = useState(false);
   const orbRef = useRef<HTMLDivElement>(null);
   const { totalStars, repoCount, loading } = useGitHubStars();
+  const router = useRouter();
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -27,8 +26,7 @@ export default function HomePage() {
   const handleQuestionClick = (question: string) => {
     setOrbPulse(true);
     setTimeout(() => {
-      setInitialQuestion(question);
-      setShowChat(true);
+      router.push(`/chat?q=${encodeURIComponent(question)}`);
       setOrbPulse(false);
     }, 600);
   };
@@ -38,8 +36,7 @@ export default function HomePage() {
     if (question) {
       setOrbPulse(true);
       setTimeout(() => {
-        setInitialQuestion(question);
-        setShowChat(true);
+        router.push(`/chat?q=${encodeURIComponent(question)}`);
         setOrbPulse(false);
       }, 800);
     }
@@ -64,14 +61,12 @@ export default function HomePage() {
       }, 200);
     };
 
-    if (!showChat) {
-      document.addEventListener("keydown", handleKeyPress);
-    }
+    document.addEventListener("keydown", handleKeyPress);
 
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [showChat]);
+  }, []);
 
   const suggestedQuestions = [
     { text: "Tell me about your experience", icon: "👨‍💻" },
@@ -97,277 +92,230 @@ export default function HomePage() {
       <div className="absolute bottom-20 right-20 w-96 h-96 bg-orange-200/20 rounded-full blur-3xl z-10 animate-float-2" />
       <div className="absolute top-1/2 left-1/3 w-48 h-48 bg-yellow-200/20 rounded-full blur-2xl animate-float-3" />
 
-      {!showChat ? (
-        <div className="flex flex-col items-center justify-center min-h-screen px-4 relative z-10">
-          <motion.div
-            className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-6"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+      <div className="flex flex-col items-center justify-center min-h-screen px-4 relative z-10">
+        <motion.div
+          className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-6"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          {/* Left side - Looking for talent */}
+          <motion.button
+            onClick={() => setShowTalentModal(true)}
+            className="bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 px-4 py-2 rounded-full font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 border border-slate-200 flex items-center gap-2"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
           >
-            {/* Left side - Looking for talent */}
-            <motion.button
-              onClick={() => setShowTalentModal(true)}
-              className="bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 px-4 py-2 rounded-full font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 border border-slate-200 flex items-center gap-2"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, x: -20 }}
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            Looking for talent
+          </motion.button>
+
+          {/* Right side - GitHub Stars + Info icon */}
+          <div className="flex items-center gap-3">
+            {/* GitHub Stars Counter */}
+            <motion.div
+              className="bg-white hover:bg-gray-50 text-slate-700 px-4 py-2 rounded-full font-medium transition-all duration-200 shadow-lg border border-slate-200 flex items-center gap-2"
+              initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              Looking for talent
+              <svg
+                className="w-4 h-4 text-yellow-500"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              {loading ? (
+                <span className="text-sm">Loading...</span>
+              ) : (
+                <span className="text-sm font-semibold">
+                  {totalStars} stars • {repoCount} repos
+                </span>
+              )}
+            </motion.div>
+
+            {/* Info icon */}
+            <motion.button
+              onClick={() => setShowInfoModal(true)}
+              className="bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 p-2 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 border border-slate-200"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
             </motion.button>
+          </div>
+        </motion.div>
 
-            {/* Right side - GitHub Stars + Info icon */}
-            <div className="flex items-center gap-3">
-              {/* GitHub Stars Counter */}
-              <motion.div
-                className="bg-white hover:bg-gray-50 text-slate-700 px-4 py-2 rounded-full font-medium transition-all duration-200 shadow-lg border border-slate-200 flex items-center gap-2"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                <svg
-                  className="w-4 h-4 text-yellow-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                {loading ? (
-                  <span className="text-sm">Loading...</span>
-                ) : (
-                  <span className="text-sm font-semibold">
-                    {totalStars} stars • {repoCount} repos
-                  </span>
-                )}
-              </motion.div>
-
-              {/* Info icon */}
-              <motion.button
-                onClick={() => setShowInfoModal(true)}
-                className="bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 p-2 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 border border-slate-200"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </motion.button>
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="mt-8 flex justify-center"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
+        <motion.div
+          className="mt-8 flex justify-center"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+        >
+          <div
+            onClick={() => {
+              const input = document.querySelector("input") as HTMLInputElement;
+              if (input) {
+                input.focus();
+              }
+            }}
           >
-            <div
+            <VoiceOrb
+              isActive={isOrbActive}
+              isListening={isOrbListening}
+              className="cursor-pointer hover:scale-105 transition-transform duration-200"
+            />
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="text-center space-y-6 mt-8"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.0 }}
+        >
+          <motion.h1
+            className="text-5xl font-semibold text-slate-800 leading-tight"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 0.8,
+              delay: 1.2,
+              type: "spring",
+              stiffness: 100,
+            }}
+          >
+            {getGreeting()}, I'm Gaseema
+          </motion.h1>
+          <motion.p
+            className="text-xl text-slate-600 max-w-2xl mx-auto font-medium"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.4 }}
+          >
+            Flutter Developer with 6+ years building fintech apps
+          </motion.p>
+        </motion.div>
+
+        <motion.div
+          className="mt-12 space-y-6 w-full max-w-md"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.9 }}
+        >
+          <motion.div
+            className="relative"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 1.1 }}
+          >
+            <input
+              type="text"
+              placeholder="Ask me anything..."
+              className="w-full px-6 py-4 bg-white/90 border border-slate-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-slate-800 placeholder-slate-500 shadow-lg"
+              onFocus={() => setIsOrbListening(true)}
+              onBlur={() => setIsOrbListening(false)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleInputSubmit(e.currentTarget);
+                  e.currentTarget.value = "";
+                  e.currentTarget.blur();
+                }
+              }}
+            />
+            <motion.button
               onClick={() => {
                 const input = document.querySelector(
                   "input"
                 ) as HTMLInputElement;
                 if (input) {
-                  input.focus();
+                  handleInputSubmit(input);
+                  input.value = "";
                 }
               }}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-500 to-blue-600 text-white p-3 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg"
+              whileHover={{ scale: 1.05, rotate: 5 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <VoiceOrb
-                isActive={isOrbActive}
-                isListening={isOrbListening}
-                className="cursor-pointer hover:scale-105 transition-transform duration-200"
-              />
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="text-center space-y-6 mt-8"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.0 }}
-          >
-            <motion.h1
-              className="text-5xl font-semibold text-slate-800 leading-tight"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                duration: 0.8,
-                delay: 1.2,
-                type: "spring",
-                stiffness: 100,
-              }}
-            >
-              {getGreeting()}, I'm Gaseema
-            </motion.h1>
-            <motion.p
-              className="text-xl text-slate-600 max-w-2xl mx-auto font-medium"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.4 }}
-            >
-              Flutter Developer with 6+ years building fintech apps
-            </motion.p>
-          </motion.div>
-
-          <motion.div
-            className="mt-12 space-y-6 w-full max-w-md"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
-          >
-            <motion.div
-              className="relative"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 1.1 }}
-            >
-              <input
-                type="text"
-                placeholder="Ask me anything..."
-                className="w-full px-6 py-4 bg-white/90 border border-slate-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-slate-800 placeholder-slate-500 shadow-lg"
-                onFocus={() => setIsOrbListening(true)}
-                onBlur={() => setIsOrbListening(false)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleInputSubmit(e.currentTarget);
-                    e.currentTarget.value = "";
-                    e.currentTarget.blur();
-                  }
-                }}
-              />
-              <motion.button
-                onClick={() => {
-                  const input = document.querySelector(
-                    "input"
-                  ) as HTMLInputElement;
-                  if (input) {
-                    handleInputSubmit(input);
-                    input.value = "";
-                  }
-                }}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-500 to-blue-600 text-white p-3 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg"
-                whileHover={{ scale: 1.05, rotate: 5 }}
-                whileTap={{ scale: 0.95 }}
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                  />
-                </svg>
-              </motion.button>
-            </motion.div>
-
-            <div className="space-y-4">
-              <motion.p
-                className="text-sm text-slate-600 text-center"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 1.3 }}
-              >
-                Or try one of these:
-              </motion.p>
-
-              <motion.div
-                className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto px-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, delay: 1.5 }}
-              >
-                {suggestedQuestions.map((question, index) => (
-                  <motion.button
-                    key={question.text}
-                    onClick={() => handleQuestionClick(question.text)}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 rounded-full transition-all duration-200 border border-slate-200 hover:border-slate-300 text-sm font-medium shadow-sm hover:shadow-md transform hover:scale-105"
-                    initial={{ opacity: 0, y: 20, scale: 0.8 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{
-                      duration: 0.5,
-                      delay: 1.7 + index * 0.1,
-                      type: "spring",
-                      stiffness: 100,
-                    }}
-                    whileHover={{
-                      scale: 1.05,
-                      y: -2,
-                      boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <span className="text-base">{question.icon}</span>
-                    <span>{question.text}</span>
-                  </motion.button>
-                ))}
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
-      ) : (
-        <div className="h-screen relative z-10 animate-fadeIn">
-          {/* Transparent App Bar */}
-          <div className="fixed top-0 left-0 right-0 z-50 bg-white/30 backdrop-blur-md border-b border-white/20 p-4">
-            <div className="max-w-4xl mx-auto flex justify-between items-center">
-              {/* Left - Back Button */}
-              <button
-                onClick={() => {
-                  setShowChat(false);
-                  setInitialQuestion("");
-                }}
-                className="bg-white/90 hover:bg-white text-slate-700 hover:text-slate-900 p-3 rounded-2xl transition-all duration-200 border border-slate-300/50 hover:border-slate-400 shadow-lg hover:shadow-xl backdrop-blur-sm"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
-              {/* Right - VoiceOrb only
-              <div className="flex items-center gap-3">
-                <VoiceOrb
-                  isActive={isOrbActive}
-                  isListening={isOrbListening}
-                  className="scale-75"
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
                 />
-              </div> */}
-            </div>
-          </div>
+              </svg>
+            </motion.button>
+          </motion.div>
 
-          {/* Chat Content with top padding to account for app bar */}
-          <div className="pt-20 h-full">
-            <AIAssistant initialQuestion={initialQuestion} className="h-full" />
+          <div className="space-y-4">
+            <motion.p
+              className="text-sm text-slate-600 text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 1.3 }}
+            >
+              Or try one of these:
+            </motion.p>
+
+            <motion.div
+              className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto px-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 1.5 }}
+            >
+              {suggestedQuestions.map((question, index) => (
+                <motion.button
+                  key={question.text}
+                  onClick={() => handleQuestionClick(question.text)}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 rounded-full transition-all duration-200 border border-slate-200 hover:border-slate-300 text-sm font-medium shadow-sm hover:shadow-md transform hover:scale-105"
+                  initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: 1.7 + index * 0.1,
+                    type: "spring",
+                    stiffness: 100,
+                  }}
+                  whileHover={{
+                    scale: 1.05,
+                    y: -2,
+                    boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span className="text-base">{question.icon}</span>
+                  <span>{question.text}</span>
+                </motion.button>
+              ))}
+            </motion.div>
           </div>
-        </div>
-      )}
+        </motion.div>
+      </div>
 
       {showTalentModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
