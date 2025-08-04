@@ -1,16 +1,3 @@
-// Build an AI-powered assistant component for my portfolio site.
-// The assistant should allow users to ask questions like:
-// - "Tell me about your experience"
-// - "What projects have you worked on?"
-// - "What technologies do you use?"
-// - "How can I contact you?"
-// The assistant should:
-// - Be chat-based with a text input and a response area
-// - Use a mock groq API function for now
-// - Show loading animation while fetching answer
-// - Auto-scroll to latest message
-// - Use a clean, responsive design with Tailwind CSS
-// - Optional: Support speech-to-text and/or text-to-speech in the future
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
@@ -42,16 +29,17 @@ function TypingText({
 
   useEffect(() => {
     if (currentIndex < text.length) {
+      // Calculate delay to make entire text take 1.5 seconds
+      const totalDuration = 1500; // 1.5 seconds in milliseconds
+      const charDelay = totalDuration / text.length;
+
       const timer = setTimeout(() => {
         setDisplayedText((prev) => prev + text[currentIndex]);
         setCurrentIndex((prev) => prev + 1);
-
-        // Removed auto-scrolling during typing to let users scroll manually
-      }, 30); // Adjust speed here (lower = faster)
+      }, charDelay);
 
       return () => clearTimeout(timer);
     } else if (onComplete) {
-      // Removed final scroll when typing completes - let user control scrolling
       onComplete();
     }
   }, [currentIndex, text, onComplete]);
@@ -84,55 +72,49 @@ export default function AIAssistant({
   const [isOrbActive, setIsOrbActive] = useState(false);
   const [isOrbListening, setIsOrbListening] = useState(false);
   const [isUserTyping, setIsUserTyping] = useState(false);
-  const [showSuggestions, setShowSuggestions] = useState(true);
+  const [showSuggestions, setShowSuggestions] = useState(
+    // Hide quick questions by default on mobile
+    !(typeof window !== 'undefined' && window.innerWidth < 768)
+  );
   const [showProjectsAfterTyping, setShowProjectsAfterTyping] = useState<
     number | null
   >(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const initialQuestionSentRef = useRef<string>("");
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const currentExchangeRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom like ChatGPT (optimized)
-  const scrollToBottom = useCallback(() => {
-    const messagesContainer = document.querySelector(".messages-container");
-    if (messagesContainer) {
-      messagesContainer.scrollTo({
-        top: messagesContainer.scrollHeight,
+  // Simple scroll logic - scroll to show only current question and answer
+  const scrollToCurrentExchange = useCallback(() => {
+    if (currentExchangeRef.current) {
+      currentExchangeRef.current.scrollIntoView({
         behavior: "smooth",
+        block: "start",
+        inline: "nearest",
       });
     }
   }, []);
 
-  // Enhanced scrolling function for real-time updates (optimized)
-  const smoothScrollToBottom = useCallback(() => {
-    const messagesContainer = document.querySelector(".messages-container");
-    if (messagesContainer) {
-      messagesContainer.scrollTo({
-        top: messagesContainer.scrollHeight,
-        behavior: "smooth",
-      });
-    }
-  }, []);
-
+  // Trigger scroll when user sends a message or when response is complete
   useEffect(() => {
-    // Auto-scroll to bottom when new messages are added (like ChatGPT)
-    if (messages.length > 0) {
-      // Small delay to ensure message is rendered before scrolling
-      setTimeout(() => {
-        scrollToBottom();
-      }, 100);
+    if (messages.length > 1) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.role === "user") {
+        // User just sent a message, scroll after a short delay
+        setTimeout(() => scrollToCurrentExchange(), 200);
+      }
     }
-  }, [messages.length, scrollToBottom]); // Trigger on every new message
+  }, [messages.length, scrollToCurrentExchange]);
 
-  // Auto-scroll to bottom when assistant finishes typing
-  useEffect(() => {
-    if (!loading && typingMessageIndex === null) {
-      // Scroll to bottom when AI finishes responding
-      setTimeout(() => {
-        scrollToBottom();
-      }, 200);
-    }
-  }, [loading, typingMessageIndex, scrollToBottom]);  // Remove auto-scroll when loading changes - let user control scroll during AI responses
+  // Remove the old auto-scroll effects
+  // useEffect(() => {
+  //   if (!loading && typingMessageIndex === null) {
+  //     setTimeout(() => {
+  //       scrollToBottom();
+  //     }, 200);
+  //   }
+  // }, [loading, typingMessageIndex, scrollToBottom]); // Remove auto-scroll when loading changes - let user control scroll during AI responses
   // useEffect(() => {
   //   if (loading) {
   //     const timeoutId = setTimeout(smoothScrollToBottom, 100);
@@ -381,89 +363,112 @@ export default function AIAssistant({
         className={`flex flex-col h-full bg-white/5 backdrop-blur-xl rounded-3xl ${className} relative overflow-hidden max-w-4xl w-full mx-4`}
       >
         {/* Messages Area - with bottom padding for fixed input and quick questions */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-6 pb-[230px] messages-container">
+        <div
+          ref={messagesContainerRef}
+          className="flex-1 overflow-y-auto p-4 space-y-6 pb-[230px] messages-container"
+        >
           {/* Increased bottom padding to prevent overlap with quick questions and input */}
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex animate-fadeInUp ${
-                message.role === "user" ? "justify-end" : "justify-start"
-              }`}
-            >
+          {messages.map((message, index) => {
+            // Find if this is part of the current exchange (last user message + response)
+            const isCurrentExchange = (() => {
+              // Find the last user message index
+              const lastUserIndex = messages.map((m, i) => m.role === "user" ? i : -1)
+                .filter(i => i !== -1)
+                .pop();
+              
+              // Current exchange includes the last user message and any messages after it
+              return lastUserIndex !== undefined && index >= lastUserIndex;
+            })();
+
+            return (
               <div
-                className={`max-w-[85%] p-4 backdrop-blur-md border shadow-lg relative transition-all duration-300 hover:shadow-xl ${
-                  message.role === "user"
-                    ? "bg-blue-500 text-white border-blue-400 ml-auto shadow-blue-500/20 rounded-3xl rounded-br-lg"
-                    : "bg-slate-100 text-slate-800 border-slate-200 shadow-slate-200/50 rounded-3xl rounded-bl-lg"
+                key={index}
+                ref={isCurrentExchange && message.role === "user" ? currentExchangeRef : undefined}
+                className={`flex animate-fadeInUp ${
+                  message.role === "user" ? "justify-end" : "justify-start"
                 }`}
               >
-                <p className="text-sm whitespace-pre-wrap">
-                  {message.role === "assistant" &&
-                  typingMessageIndex === index ? (
-                    <TypingText
-                      text={message.content
-                        .replace("CHECK_OUT_MY_PROJECTS", "")
-                        .replace("SHOW_CONTACT_CARD", "")
-                        .trim()}
-                      onComplete={() => {
-                        setTypingMessageIndex(null);
-                        setLoading(false);
-                        setIsOrbActive(false);
-                        setIsOrbListening(false);
-                        // Show projects after typing completes if this message has the trigger
-                        if (message.content.includes("CHECK_OUT_MY_PROJECTS")) {
-                          setShowProjectsAfterTyping(index);
-                        }
-                      }}
-                    />
-                  ) : (
-                    message.content
-                      .replace("CHECK_OUT_MY_PROJECTS", "")
-                      .replace("SHOW_CONTACT_CARD", "")
-                      .trim()
-                  )}
-                </p>
-
-                {/* Show ProjectShowcase inline when message contains the trigger AND typing is complete */}
-                {(() => {
-                  const shouldShow =
-                    message.role === "assistant" &&
-                    message.content.includes("CHECK_OUT_MY_PROJECTS") &&
-                    typingMessageIndex !== index; // Only show if not currently typing this message
-                  return shouldShow;
-                })() && (
-                  <div className="mt-4 animate-fadeIn">
-                    <ProjectShowcase />
-                  </div>
-                )}
-
-                {/* Show ContactCard inline when message contains the contact trigger AND typing is complete */}
-                {(() => {
-                  const shouldShow =
-                    message.role === "assistant" &&
-                    message.content.includes("SHOW_CONTACT_CARD") &&
-                    typingMessageIndex !== index; // Only show if not currently typing this message
-                  return shouldShow;
-                })() && (
-                  <div className="mt-4 animate-fadeIn">
-                    <ContactCard />
-                  </div>
-                )}
-
-                <span
-                  className={`text-xs opacity-70 mt-1 block ${
-                    message.role === "user" ? "text-blue-100" : "text-slate-500"
+                <div
+                  className={`max-w-[85%] p-4 backdrop-blur-md border shadow-lg relative transition-all duration-300 hover:shadow-xl ${
+                    message.role === "user"
+                      ? "bg-blue-500 text-white border-blue-400 ml-auto shadow-blue-500/20 rounded-3xl rounded-br-lg"
+                      : "bg-slate-100 text-slate-800 border-slate-200 shadow-slate-200/50 rounded-3xl rounded-bl-lg"
                   }`}
                 >
-                  {message.timestamp.toLocaleTimeString("en-US", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: false,
-                  })}
-                </span>
+                  <p className="text-sm whitespace-pre-wrap">
+                    {message.role === "assistant" &&
+                    typingMessageIndex === index ? (
+                      <TypingText
+                        text={message.content
+                          .replace("CHECK_OUT_MY_PROJECTS", "")
+                          .replace("SHOW_CONTACT_CARD", "")
+                          .trim()}
+                        onComplete={() => {
+                          setTypingMessageIndex(null);
+                          setLoading(false);
+                          setIsOrbActive(false);
+                          setIsOrbListening(false);
+                          // Scroll to show the complete exchange after typing
+                          setTimeout(() => scrollToCurrentExchange(), 100);
+                          // Show projects after typing completes if this message has the trigger
+                          if (
+                            message.content.includes("CHECK_OUT_MY_PROJECTS")
+                          ) {
+                            setShowProjectsAfterTyping(index);
+                          }
+                        }}
+                      />
+                    ) : (
+                      message.content
+                        .replace("CHECK_OUT_MY_PROJECTS", "")
+                        .replace("SHOW_CONTACT_CARD", "")
+                        .trim()
+                    )}
+                  </p>
+
+                  {/* Show ProjectShowcase inline when message contains the trigger AND typing is complete */}
+                  {(() => {
+                    const shouldShow =
+                      message.role === "assistant" &&
+                      message.content.includes("CHECK_OUT_MY_PROJECTS") &&
+                      typingMessageIndex !== index; // Only show if not currently typing this message
+                    return shouldShow;
+                  })() && (
+                    <div className="mt-4 animate-fadeIn">
+                      <ProjectShowcase />
+                    </div>
+                  )}
+
+                  {/* Show ContactCard inline when message contains the contact trigger AND typing is complete */}
+                  {(() => {
+                    const shouldShow =
+                      message.role === "assistant" &&
+                      message.content.includes("SHOW_CONTACT_CARD") &&
+                      typingMessageIndex !== index; // Only show if not currently typing this message
+                    return shouldShow;
+                  })() && (
+                    <div className="mt-4 animate-fadeIn">
+                      <ContactCard />
+                    </div>
+                  )}
+
+                  <span
+                    className={`text-xs opacity-70 mt-1 block ${
+                      message.role === "user"
+                        ? "text-blue-100"
+                        : "text-slate-500"
+                    }`}
+                  >
+                    {message.timestamp.toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    })}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {/* Loading Animation with Wave Ellipsis */}
           {loading && (

@@ -94,7 +94,7 @@ export default function HomePage() {
 
       <div className="flex flex-col items-center justify-center min-h-screen px-4 relative z-10">
         <motion.div
-          className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-6"
+          className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-4 md:p-6"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
@@ -102,38 +102,41 @@ export default function HomePage() {
           {/* Left side - Looking for talent */}
           <motion.button
             onClick={() => setShowTalentModal(true)}
-            className="bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 px-4 py-2 rounded-full font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 border border-slate-200 flex items-center gap-2"
+            className="bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 px-2 py-1.5 md:px-4 md:py-2 rounded-full font-medium transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 border border-slate-200 flex items-center gap-1 md:gap-2"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            Looking for talent
+            <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span className="text-xs md:text-sm">Looking for talent</span>
           </motion.button>
 
           {/* Right side - GitHub Stars + Info icon */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 md:gap-3">
             {/* GitHub Stars Counter */}
             <motion.div
-              className="bg-white hover:bg-gray-50 text-slate-700 px-4 py-2 rounded-full font-medium transition-all duration-200 shadow-lg border border-slate-200 flex items-center gap-2"
+              className="bg-white hover:bg-gray-50 text-slate-700 px-2 py-1.5 md:px-4 md:py-2 rounded-full font-medium transition-all duration-200 shadow-lg border border-slate-200 flex items-center gap-1 md:gap-2"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               <svg
-                className="w-4 h-4 text-yellow-500"
+                className="w-3 h-3 md:w-4 md:h-4 text-yellow-500"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
               {loading ? (
-                <span className="text-sm">Loading...</span>
+                <span className="text-xs md:text-sm">Loading...</span>
               ) : (
-                <span className="text-sm font-semibold">
-                  {totalStars} stars • {repoCount} repos
+                <span className="text-xs md:text-sm font-semibold">
+                  <span className="hidden sm:inline">
+                    {totalStars} stars • {repoCount} repos
+                  </span>
+                  <span className="sm:hidden">{totalStars}⭐</span>
                 </span>
               )}
             </motion.div>
@@ -141,7 +144,7 @@ export default function HomePage() {
             {/* Info icon */}
             <motion.button
               onClick={() => setShowInfoModal(true)}
-              className="bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 p-2 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 border border-slate-200"
+              className="bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 p-1.5 md:p-2 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 border border-slate-200"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               initial={{ opacity: 0, x: 20 }}
@@ -149,7 +152,7 @@ export default function HomePage() {
               transition={{ duration: 0.6, delay: 0.5 }}
             >
               <svg
-                className="w-5 h-5"
+                className="w-4 h-4 md:w-5 md:h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -166,7 +169,7 @@ export default function HomePage() {
         </motion.div>
 
         <motion.div
-          className="mt-8 flex justify-center"
+          className="mt-16 md:mt-8 flex justify-center"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.8 }}
@@ -188,13 +191,13 @@ export default function HomePage() {
         </motion.div>
 
         <motion.div
-          className="text-center space-y-6 mt-8"
+          className="text-center space-y-4 md:space-y-6 mt-6 md:mt-8"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.0 }}
         >
           <motion.h1
-            className="text-5xl font-semibold text-slate-800 leading-tight"
+            className="text-3xl md:text-5xl font-semibold text-slate-800 leading-tight px-4"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{
@@ -207,7 +210,7 @@ export default function HomePage() {
             {getGreeting()}, I'm Gaseema
           </motion.h1>
           <motion.p
-            className="text-xl text-slate-600 max-w-2xl mx-auto font-medium"
+            className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto font-medium px-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.4 }}
@@ -217,7 +220,7 @@ export default function HomePage() {
         </motion.div>
 
         <motion.div
-          className="mt-12 space-y-6 w-full max-w-md"
+          className="mt-8 md:mt-12 space-y-4 md:space-y-6 w-full max-w-md px-4"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.9 }}
@@ -231,7 +234,7 @@ export default function HomePage() {
             <input
               type="text"
               placeholder="Ask me anything..."
-              className="w-full px-6 py-4 bg-white/90 border border-slate-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-slate-800 placeholder-slate-500 shadow-lg"
+              className="w-full px-4 py-3 md:px-6 md:py-4 bg-white/90 border border-slate-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-slate-800 placeholder-slate-500 shadow-lg text-sm md:text-base"
               onFocus={() => setIsOrbListening(true)}
               onBlur={() => setIsOrbListening(false)}
               onKeyDown={(e) => {
@@ -252,12 +255,12 @@ export default function HomePage() {
                   input.value = "";
                 }
               }}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-500 to-blue-600 text-white p-3 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg"
+              className="absolute right-1.5 md:right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-500 to-blue-600 text-white p-2 md:p-3 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg"
               whileHover={{ scale: 1.05, rotate: 5 }}
               whileTap={{ scale: 0.95 }}
             >
               <svg
-                className="w-5 h-5"
+                className="w-4 h-4 md:w-5 md:h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -272,9 +275,9 @@ export default function HomePage() {
             </motion.button>
           </motion.div>
 
-          <div className="space-y-4">
+          <div className="space-y-3 md:space-y-4">
             <motion.p
-              className="text-sm text-slate-600 text-center"
+              className="text-xs md:text-sm text-slate-600 text-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 1.3 }}
@@ -283,7 +286,7 @@ export default function HomePage() {
             </motion.p>
 
             <motion.div
-              className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto px-4"
+              className="flex flex-wrap justify-center gap-2 md:gap-3 max-w-4xl mx-auto"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 1.5 }}
@@ -292,7 +295,7 @@ export default function HomePage() {
                 <motion.button
                   key={question.text}
                   onClick={() => handleQuestionClick(question.text)}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 rounded-full transition-all duration-200 border border-slate-200 hover:border-slate-300 text-sm font-medium shadow-sm hover:shadow-md transform hover:scale-105"
+                  className="inline-flex items-center gap-1.5 md:gap-2 px-3 py-2 md:px-4 md:py-2.5 bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 rounded-full transition-all duration-200 border border-slate-200 hover:border-slate-300 text-xs md:text-sm font-medium shadow-sm hover:shadow-md transform hover:scale-105"
                   initial={{ opacity: 0, y: 20, scale: 0.8 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{
@@ -308,8 +311,8 @@ export default function HomePage() {
                   }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <span className="text-base">{question.icon}</span>
-                  <span>{question.text}</span>
+                  <span className="text-sm md:text-base">{question.icon}</span>
+                  <span className="leading-tight">{question.text}</span>
                 </motion.button>
               ))}
             </motion.div>
