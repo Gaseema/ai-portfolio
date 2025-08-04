@@ -442,7 +442,7 @@ export default function HomePage() {
                 style={{ animationDelay: "0.6s" }}
               >
                 <a
-                  href="mailto:your-email@example.com"
+                  href="mailto:gaseema.n@gmail.com"
                   className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 px-6 rounded-xl font-medium transition-all duration-300 text-center shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
                 >
                   💬 Let's Chat!

@@ -441,9 +441,10 @@ export default function AIAssistant({
                     message.role === "user" ? "text-blue-100" : "text-slate-500"
                   }`}
                 >
-                  {message.timestamp.toLocaleTimeString([], {
+                  {message.timestamp.toLocaleTimeString("en-US", {
                     hour: "2-digit",
                     minute: "2-digit",
+                    hour12: false,
                   })}
                 </span>
               </div>

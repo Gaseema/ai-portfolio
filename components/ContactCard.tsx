@@ -7,8 +7,8 @@ export default function ContactCard() {
     {
       icon: "📧",
       label: "Email",
-      value: "gaseema@example.com",
-      href: "mailto:gaseema@example.com",
+      value: "gaseema.n@gmail.com",
+      href: "mailto:gaseema.n@gmail.com",
       description: "Best for project inquiries",
     },
     {
@@ -21,8 +21,8 @@ export default function ContactCard() {
     {
       icon: "💬",
       label: "WhatsApp",
-      value: "+254 XXX XXX XXX",
-      href: "https://wa.me/254XXXXXXXXX",
+      value: "+254 721 882 694",
+      href: "https://wa.me/254721882694",
       description: "Quick chat & calls",
     },
     {
