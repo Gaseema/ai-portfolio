@@ -324,37 +324,17 @@ export default function HomePage() {
                 </svg>
               </button>
 
-              {/* Right - Gaseema's Assistant text + Small Orb */}
+              {/* Right - Gaseema's Assistant text + VoiceOrb */}
               <div className="flex items-center gap-3">
                 <h2 className="text-lg font-semibold text-slate-800">
-                  Gaseema's Assistant
+                  Gaseema's Assistantt
                 </h2>
-                <div
-                  ref={orbRef}
-                  className={`w-10 h-10 bg-gradient-to-br from-white via-blue-50 to-blue-100 rounded-full flex items-center justify-center text-sm shadow-lg border border-white/50 cursor-pointer transition-all duration-300 hover:scale-110 animate-float-1 ${
-                    orbPulse ? "animate-pulse" : ""
-                  }`}
-                  onClick={() => {
-                    const input = document.querySelector(
-                      "textarea"
-                    ) as HTMLTextAreaElement;
-                    if (input) {
-                      input.focus();
-                    }
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "scale(1.15)";
-                    e.currentTarget.style.boxShadow =
-                      "0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 0 20px rgba(59, 130, 246, 0.3)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "scale(1)";
-                    e.currentTarget.style.boxShadow =
-                      "0 10px 25px -5px rgba(0, 0, 0, 0.15)";
-                  }}
-                >
-                  🤖
-                </div>
+
+                <VoiceOrb
+                  isActive={isOrbActive}
+                  isListening={isOrbListening}
+                  className="scale-75"
+                />
               </div>
             </div>
           </div>
