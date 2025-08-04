@@ -3,7 +3,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import ProjectShowcase from "./ProjectShowcase";
 import ContactCard from "./ContactCard";
-import VoiceOrb from "./VoiceOrb";
+import { VoiceOrb } from "./ui/orbs";
+import { ChatMessage, ChatInput } from "./ui/chat";
 
 interface Message {
   role: "user" | "assistant";
@@ -14,42 +15,6 @@ interface Message {
 interface AIAssistantProps {
   className?: string;
   initialQuestion?: string;
-}
-
-// Typing animation component
-function TypingText({
-  text,
-  onComplete,
-}: {
-  text: string;
-  onComplete?: () => void;
-}) {
-  const [displayedText, setDisplayedText] = useState("");
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    if (currentIndex < text.length) {
-      // Calculate delay to make entire text take 1.5 seconds
-      const totalDuration = 1500; // 1.5 seconds in milliseconds
-      const charDelay = totalDuration / text.length;
-
-      const timer = setTimeout(() => {
-        setDisplayedText((prev) => prev + text[currentIndex]);
-        setCurrentIndex((prev) => prev + 1);
-      }, charDelay);
-
-      return () => clearTimeout(timer);
-    } else if (onComplete) {
-      onComplete();
-    }
-  }, [currentIndex, text, onComplete]);
-
-  useEffect(() => {
-    setDisplayedText("");
-    setCurrentIndex(0);
-  }, [text]);
-
-  return <span>{displayedText}</span>;
 }
 
 export default function AIAssistant({
@@ -74,7 +39,7 @@ export default function AIAssistant({
   const [isUserTyping, setIsUserTyping] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(
     // Hide quick questions by default on mobile
-    !(typeof window !== 'undefined' && window.innerWidth < 768)
+    !(typeof window !== "undefined" && window.innerWidth < 768)
   );
   const [showProjectsAfterTyping, setShowProjectsAfterTyping] = useState<
     number | null
@@ -313,33 +278,6 @@ export default function AIAssistant({
     }
   }, [initialQuestion, handleSend]);
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
-  // Auto-resize textarea
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    setInput(value);
-
-    // Track user typing for orb animation
-    setIsUserTyping(value.length > 0);
-
-    // Reset height to auto to get the scroll height
-    e.target.style.height = "auto";
-
-    // Set height based on scroll height, with min/max constraints
-    const scrollHeight = e.target.scrollHeight;
-    const minHeight = 56; // min-h-[56px]
-    const maxHeight = 128; // max-h-32 (32 * 4 = 128px)
-
-    e.target.style.height =
-      Math.min(Math.max(scrollHeight, minHeight), maxHeight) + "px";
-  };
-
   const suggestedQuestions = [
     "What projects have you worked on?",
     "Tell me about your experience",
@@ -372,101 +310,38 @@ export default function AIAssistant({
             // Find if this is part of the current exchange (last user message + response)
             const isCurrentExchange = (() => {
               // Find the last user message index
-              const lastUserIndex = messages.map((m, i) => m.role === "user" ? i : -1)
-                .filter(i => i !== -1)
+              const lastUserIndex = messages
+                .map((m, i) => (m.role === "user" ? i : -1))
+                .filter((i) => i !== -1)
                 .pop();
-              
+
               // Current exchange includes the last user message and any messages after it
               return lastUserIndex !== undefined && index >= lastUserIndex;
             })();
 
             return (
-              <div
+              <ChatMessage
                 key={index}
-                ref={isCurrentExchange && message.role === "user" ? currentExchangeRef : undefined}
-                className={`flex animate-fadeInUp ${
-                  message.role === "user" ? "justify-end" : "justify-start"
-                }`}
-              >
-                <div
-                  className={`max-w-[85%] p-4 backdrop-blur-md border shadow-lg relative transition-all duration-300 hover:shadow-xl ${
-                    message.role === "user"
-                      ? "bg-blue-500 text-white border-blue-400 ml-auto shadow-blue-500/20 rounded-3xl rounded-br-lg"
-                      : "bg-slate-100 text-slate-800 border-slate-200 shadow-slate-200/50 rounded-3xl rounded-bl-lg"
-                  }`}
-                >
-                  <p className="text-sm whitespace-pre-wrap">
-                    {message.role === "assistant" &&
-                    typingMessageIndex === index ? (
-                      <TypingText
-                        text={message.content
-                          .replace("CHECK_OUT_MY_PROJECTS", "")
-                          .replace("SHOW_CONTACT_CARD", "")
-                          .trim()}
-                        onComplete={() => {
-                          setTypingMessageIndex(null);
-                          setLoading(false);
-                          setIsOrbActive(false);
-                          setIsOrbListening(false);
-                          // Scroll to show the complete exchange after typing
-                          setTimeout(() => scrollToCurrentExchange(), 100);
-                          // Show projects after typing completes if this message has the trigger
-                          if (
-                            message.content.includes("CHECK_OUT_MY_PROJECTS")
-                          ) {
-                            setShowProjectsAfterTyping(index);
-                          }
-                        }}
-                      />
-                    ) : (
-                      message.content
-                        .replace("CHECK_OUT_MY_PROJECTS", "")
-                        .replace("SHOW_CONTACT_CARD", "")
-                        .trim()
-                    )}
-                  </p>
-
-                  {/* Show ProjectShowcase inline when message contains the trigger AND typing is complete */}
-                  {(() => {
-                    const shouldShow =
-                      message.role === "assistant" &&
-                      message.content.includes("CHECK_OUT_MY_PROJECTS") &&
-                      typingMessageIndex !== index; // Only show if not currently typing this message
-                    return shouldShow;
-                  })() && (
-                    <div className="mt-4 animate-fadeIn">
-                      <ProjectShowcase />
-                    </div>
-                  )}
-
-                  {/* Show ContactCard inline when message contains the contact trigger AND typing is complete */}
-                  {(() => {
-                    const shouldShow =
-                      message.role === "assistant" &&
-                      message.content.includes("SHOW_CONTACT_CARD") &&
-                      typingMessageIndex !== index; // Only show if not currently typing this message
-                    return shouldShow;
-                  })() && (
-                    <div className="mt-4 animate-fadeIn">
-                      <ContactCard />
-                    </div>
-                  )}
-
-                  <span
-                    className={`text-xs opacity-70 mt-1 block ${
-                      message.role === "user"
-                        ? "text-blue-100"
-                        : "text-slate-500"
-                    }`}
-                  >
-                    {message.timestamp.toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: false,
-                    })}
-                  </span>
-                </div>
-              </div>
+                ref={
+                  isCurrentExchange && message.role === "user"
+                    ? currentExchangeRef
+                    : undefined
+                }
+                message={message}
+                index={index}
+                typingMessageIndex={typingMessageIndex}
+                onTypingComplete={() => {
+                  setTypingMessageIndex(null);
+                  setLoading(false);
+                  setIsOrbActive(false);
+                  setIsOrbListening(false);
+                  // Scroll to show the complete exchange after typing
+                  setTimeout(() => scrollToCurrentExchange(), 100);
+                }}
+                onProjectTrigger={(index) => {
+                  setShowProjectsAfterTyping(index);
+                }}
+              />
             );
           })}
 
@@ -565,52 +440,17 @@ export default function AIAssistant({
           )}
 
           {/* Input Area */}
-          <div className="p-6 border-t border-white/10">
-            <div className="flex gap-3">
-              <textarea
-                ref={inputRef}
-                value={input}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyPress}
-                placeholder="Ask me anything about Gaseema..."
-                disabled={loading}
-                rows={1}
-                className="flex-1 bg-white/90 text-slate-800 placeholder-slate-500 border border-slate-300 rounded-3xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 disabled:opacity-50 transition-all duration-300 shadow-sm focus:scale-[1.01] resize-none min-h-[56px] max-h-32 overflow-y-auto"
-              />
-              <button
-                onClick={() => handleSend()}
-                disabled={!input.trim() || loading}
-                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-slate-400 disabled:to-slate-500 disabled:text-slate-300 text-white px-6 py-4 rounded-3xl transition-all duration-300 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 disabled:hover:scale-100 font-medium"
-              >
-                {loading ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                    />
-                  </svg>
-                )}
-              </button>
-            </div>
-
-            <div className="flex items-center justify-between mt-2">
-              <span className="text-xs text-slate-700 font-medium">
-                Press Enter to send, Shift+Enter for new line
-              </span>
-              <span className="text-xs text-slate-700 font-medium">
-                {input.length}/500
-              </span>
-            </div>
-          </div>
+          <ChatInput
+            ref={inputRef}
+            input={input}
+            loading={loading}
+            onInputChange={(value) => {
+              setInput(value);
+              // Track user typing for orb animation
+              setIsUserTyping(value.length > 0);
+            }}
+            onSend={() => handleSend()}
+          />
         </div>
       </div>
     </div>
