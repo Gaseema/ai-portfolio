@@ -352,12 +352,8 @@ export default function HomePage() {
                 </svg>
               </button>
 
-              {/* Right - Gaseema's Assistant text + VoiceOrb */}
+              {/* Right - VoiceOrb only */}
               <div className="flex items-center gap-3">
-                <h2 className="text-lg font-semibold text-slate-800">
-                  Gaseema's Assistantt
-                </h2>
-
                 <VoiceOrb
                   isActive={isOrbActive}
                   isListening={isOrbListening}
