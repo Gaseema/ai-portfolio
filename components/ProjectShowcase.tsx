@@ -285,7 +285,7 @@ export default function ProjectShowcase() {
       <div className="relative">
         <motion.div
           ref={scrollContainerRef}
-          className="flex gap-4 overflow-x-auto py-4 px-2 scrollbar-hide scroll-smooth"
+          className="flex gap-4 overflow-x-auto py-4 px-2 scrollbar-animated scroll-smooth"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -481,7 +481,7 @@ export default function ProjectShowcase() {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-slate-200 relative shadow-2xl mx-auto"
+                className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-slate-200 relative shadow-2xl mx-auto scrollbar-custom"
                 onClick={(e) => e.stopPropagation()}
                 style={{
                   position: "relative",

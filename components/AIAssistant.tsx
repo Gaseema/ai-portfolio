@@ -303,7 +303,7 @@ export default function AIAssistant({
         {/* Messages Area - with bottom padding for fixed input and quick questions */}
         <div
           ref={messagesContainerRef}
-          className="flex-1 overflow-y-auto p-4 space-y-6 pb-[230px] messages-container"
+          className="flex-1 overflow-y-auto p-4 space-y-6 pb-[230px] messages-container scrollbar-animated"
         >
           {/* Increased bottom padding to prevent overlap with quick questions and input */}
           {messages.map((message, index) => {
@@ -398,7 +398,7 @@ export default function AIAssistant({
                   </svg>
                 </button>
               </div>
-              <div className="overflow-x-auto pb-1">
+              <div className="overflow-x-auto pb-1 scrollbar-minimal">
                 <div
                   className="flex gap-2 scrollbar-hide"
                   style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}

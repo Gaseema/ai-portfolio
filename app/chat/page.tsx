@@ -3,7 +3,7 @@
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import AIAssistant from "@/components/AIAssistant";
-import VoiceOrb from "@/components/VoiceOrb";
+import PulsatingOrb from "@/components/PulsatingOrb";
 
 function ChatContent() {
   const router = useRouter();
