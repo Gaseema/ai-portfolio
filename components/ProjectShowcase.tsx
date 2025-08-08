@@ -38,7 +38,7 @@ const projects: Project[] = [
       "Setup automated CI/CD pipeline",
     ],
     image: "🏦",
-    backgroundImage: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    backgroundImage: "/project1.png",
     category: "fintech",
     year: "2023-Now",
     users: "50K+",
@@ -57,7 +57,7 @@ const projects: Project[] = [
       "Implemented crypto wallet features",
     ],
     image: "₿",
-    backgroundImage: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+    backgroundImage: "/project2.png",
     category: "crypto",
     year: "2020-2021",
     users: "10K+",
@@ -307,32 +307,34 @@ export default function ProjectShowcase() {
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setSelectedProject(project)}
                 transition={{ duration: 0.2 }}
-                className="relative bg-white backdrop-blur-sm rounded-2xl p-6 cursor-pointer border border-slate-200/60 hover:border-slate-300/80 hover:shadow-xl transition-all duration-500 group overflow-hidden h-64"
+                className="relative bg-white backdrop-blur-sm rounded-2xl cursor-pointer border border-slate-200/60 hover:border-slate-300/80 hover:shadow-xl transition-all duration-500 group overflow-hidden h-80"
               >
-                {/* Dynamic Background Gradient */}
+                {/* Background Image */}
                 <div
-                  className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-500"
-                  style={{ background: project.backgroundImage }}
+                  className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-500 group-hover:scale-105"
+                  style={{
+                    backgroundImage: project.backgroundImage.startsWith('/')
+                      ? `url('${project.backgroundImage}')`
+                      : project.backgroundImage
+                  }}
                 />
 
-                {/* Glass overlay */}
-                <div className="absolute inset-0 bg-white/70 backdrop-blur-sm" />
+                {/* Black Gradient Overlay for Text Readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
                 {/* Content Container */}
-                <div className="relative z-10 h-full flex flex-col">
+                <div className="relative z-10 h-full flex flex-col p-6">
                   {/* Header: Icon & Category */}
                   <div className="flex items-center justify-between mb-4">
                     <motion.div
-                      className="text-4xl filter drop-shadow-sm"
+                      className="text-4xl filter drop-shadow-lg"
                       whileHover={{ scale: 1.1 }}
                       transition={{ duration: 0.2 }}
                     >
                       {project.image}
                     </motion.div>
                     <motion.span
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold border backdrop-blur-sm ${getCategoryColor(
-                        project.category
-                      )}`}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold border backdrop-blur-md bg-black/20 text-white border-white/30`}
                       whileHover={{ scale: 1.05 }}
                       transition={{ duration: 0.15 }}
                     >
@@ -343,13 +345,13 @@ export default function ProjectShowcase() {
                   {/* Project Title & Description */}
                   <div className="flex-grow">
                     <motion.h4
-                      className="font-bold text-slate-900 text-lg mb-2 group-hover:text-slate-800 transition-colors duration-300 leading-tight"
+                      className="font-bold text-white text-lg mb-2 group-hover:text-gray-100 transition-colors duration-300 leading-tight drop-shadow-lg"
                       layout
                     >
                       {project.title}
                     </motion.h4>
                     <motion.p
-                      className="text-sm text-slate-600 mb-4 line-clamp-2 leading-relaxed"
+                      className="text-sm text-gray-200 mb-4 line-clamp-2 leading-relaxed drop-shadow-md"
                       layout
                     >
                       {project.description}
@@ -362,11 +364,11 @@ export default function ProjectShowcase() {
                       className="flex justify-between items-center text-xs mb-3"
                       layout
                     >
-                      <span className="text-slate-500 font-medium bg-white/70 px-2 py-1 rounded-lg backdrop-blur-sm">
+                      <span className="text-gray-200 font-medium bg-black/40 px-2 py-1 rounded-lg backdrop-blur-md border border-white/20">
                         {project.year}
                       </span>
                       {project.impact && (
-                        <span className="text-slate-700 font-semibold bg-white/80 px-2 py-1 rounded-lg backdrop-blur-sm">
+                        <span className="text-white font-semibold bg-black/50 px-2 py-1 rounded-lg backdrop-blur-md border border-white/30">
                           {project.impact}
                         </span>
                       )}
@@ -374,7 +376,7 @@ export default function ProjectShowcase() {
 
                     {/* CTA Button */}
                     <motion.div
-                      className="flex items-center gap-2 text-sm text-blue-600 font-semibold group-hover:text-blue-700 transition-colors duration-300 bg-white/80 px-3 py-2 rounded-xl backdrop-blur-sm"
+                      className="flex items-center gap-2 text-sm text-blue-300 font-semibold group-hover:text-blue-200 transition-colors duration-300 bg-black/40 px-3 py-2 rounded-xl backdrop-blur-md border border-white/20"
                       layout
                     >
                       <span>View Details</span>
