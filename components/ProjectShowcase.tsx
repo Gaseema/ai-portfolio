@@ -19,96 +19,199 @@ interface Project {
   image: string;
   backgroundImage: string;
   screenshots?: string[];
-  category: "fintech" | "crypto" | "enterprise" | "mobile";
+  category: "fintech" | "crypto" | "personal" | "social";
   year: string;
   users?: string;
   impact?: string;
 }
 
 const projects: Project[] = [
+  // Fintech Apps Category
   {
-    id: "wizglobal",
-    title: "WizGlobal Banking Apps",
+    id: "oldmutual",
+    title: "OldMutual Mobile App",
     description:
-      "Senior Mobile Developer for major banking clients including CIC Bank, OldMutual, Kuza, and Enwealth",
-    tech: ["Flutter", "Firebase", "CI/CD", "Codemagic"],
+      "Premium banking and investment app for OldMutual clients with advanced portfolio management",
+    tech: ["Flutter", "Firebase", "CI/CD", "Codemagic", "REST APIs"],
     achievements: [
-      "Boosted app downloads by 35%",
-      "Reduced crashes by 30%",
-      "Implemented Flutter flavors",
-      "Setup automated CI/CD pipeline",
+      "Implemented secure biometric authentication",
+      "Built real-time portfolio tracking",
+      "Optimized app performance by 40%",
+      "Integrated with core banking systems",
     ],
     image: "🏦",
-    backgroundImage: "/projects/wizglobal/banner.png",
+    backgroundImage: "/projects/oldmutual/banner.png",
     screenshots: [
-      "/projects/wizglobal/screenshot-01-dashboard.jpg",
-      "/projects/wizglobal/screenshot-02-profile.jpg",
-      "/projects/wizglobal/screenshot-03-features.webp"
+      "/projects/oldmutual/screenshot-01-dashboard.jpg",
+      "/projects/oldmutual/screenshot-02-profile.jpg",
+      "/projects/oldmutual/screenshot-03-features.webp",
     ],
     category: "fintech",
-    year: "2023-Now",
-    users: "50K+",
-    impact: "+35% downloads",
+    year: "2023-2024",
+    users: "25K+",
+    impact: "40% performance boost",
   },
+  {
+    id: "kuza",
+    title: "Kuza Banking App",
+    description:
+      "Digital banking solution with modern UI/UX and comprehensive financial services",
+    tech: ["Flutter", "Node.js", "PostgreSQL", "Firebase"],
+    achievements: [
+      "Reduced transaction time by 60%",
+      "Implemented smart notifications",
+      "Built cross-platform compatibility",
+      "Enhanced security protocols",
+    ],
+    image: "💳",
+    backgroundImage: "/projects/kuza/banner.png",
+    screenshots: [
+      "/projects/kuza/screenshot-01-wallet.jpg",
+      "/projects/kuza/screenshot-02-transactions.jpg",
+      "/projects/kuza/screenshot-03-exchange.webp",
+    ],
+    category: "fintech",
+    year: "2023",
+    users: "15K+",
+    impact: "60% faster transactions",
+  },
+  {
+    id: "lofty-corban",
+    title: "Lofty Corban Investment",
+    description:
+      "Investment management platform with portfolio analytics and trading capabilities",
+    tech: ["Flutter", "Firebase", "Real-time APIs", "Chart.js"],
+    achievements: [
+      "Built advanced analytics dashboard",
+      "Implemented real-time market data",
+      "Created portfolio optimization tools",
+      "Achieved 99.8% uptime",
+    ],
+    image: "📈",
+    backgroundImage: "/projects/lofty-corban/banner.png",
+    screenshots: [
+      "/projects/lofty-corban/screenshot-01-dashboard.jpg",
+      "/projects/lofty-corban/screenshot-02-profile.jpg",
+      "/projects/lofty-corban/screenshot-03-features.webp",
+    ],
+    category: "fintech",
+    year: "2024",
+    users: "8K+",
+    impact: "99.8% uptime",
+  },
+
+  // Crypto Apps Category
   {
     id: "bitlipa",
     title: "BitLipa Crypto Platform",
     description:
-      "Tech Lead for crypto payment system handling millions in transactions",
-    tech: ["Flutter", "Node.js", "MongoDB", "Crypto APIs"],
+      "Advanced crypto trading and wallet platform with multi-currency support",
+    tech: ["Flutter", "Node.js", "MongoDB", "Crypto APIs", "WebSocket"],
     achievements: [
       "Handled $1M+ in transactions",
-      "Led development team",
-      "Built secure payment systems",
-      "Implemented crypto wallet features",
+      "Built secure wallet infrastructure",
+      "Implemented real-time price tracking",
+      "Led development team of 5",
     ],
     image: "₿",
     backgroundImage: "/projects/bitlipa/banner.png",
     screenshots: [
       "/projects/bitlipa/screenshot-01-wallet.jpg",
       "/projects/bitlipa/screenshot-02-transactions.jpg",
-      "/projects/bitlipa/screenshot-03-exchange.webp"
+      "/projects/bitlipa/screenshot-03-exchange.webp",
     ],
     category: "crypto",
     year: "2020-2021",
-    users: "10K+",
+    users: "12K+",
     impact: "$1M+ transactions",
   },
+
+  // Personal Apps Category
+  {
+    id: "agentbay",
+    title: "AgentBay",
+    description:
+      "AI-powered real estate platform connecting agents with clients through intelligent matching",
+    tech: [
+      "Flutter",
+      "AI/ML",
+      "Firebase",
+      "Google Maps API",
+      "Push Notifications",
+    ],
+    achievements: [
+      "Built AI property matching algorithm",
+      "Integrated real-time chat system",
+      "Implemented geolocation features",
+      "Achieved 95% user satisfaction",
+    ],
+    image: "🏠",
+    backgroundImage: "/projects/agentbay/banner.png",
+    screenshots: [
+      "/projects/agentbay/screenshot-01-dashboard.jpg",
+      "/projects/agentbay/screenshot-02-profile.jpg",
+      "/projects/agentbay/screenshot-03-features.webp",
+    ],
+    category: "personal",
+    year: "2024",
+    users: "5K+",
+    impact: "95% satisfaction",
+  },
+  {
+    id: "mvest",
+    title: "Mvest Investment",
+    description:
+      "Personal investment tracking app with portfolio analytics and market insights",
+    tech: [
+      "Flutter",
+      "Firebase",
+      "Chart.js",
+      "Market APIs",
+      "Push Notifications",
+    ],
+    achievements: [
+      "Built comprehensive portfolio tracker",
+      "Integrated multiple market data sources",
+      "Created custom analytics dashboard",
+      "Implemented smart investment alerts",
+    ],
+    image: "💰",
+    backgroundImage: "/projects/mvest/banner.png",
+    screenshots: [
+      "/projects/mvest/screenshot-01-wallet.jpg",
+      "/projects/mvest/screenshot-02-transactions.jpg",
+      "/projects/mvest/screenshot-03-exchange.webp",
+    ],
+    category: "personal",
+    year: "2023-2024",
+    users: "3K+",
+    impact: "Smart alerts system",
+  },
+
+  // Social Apps Category
   {
     id: "mash",
     title: "Mash Social App",
-    description: "Improved UX and performance for social engagement platform",
-    tech: ["Flutter", "Provider", "GitHub Actions"],
+    description:
+      "Social engagement platform with improved UX and real-time interactions",
+    tech: ["Flutter", "Provider", "GitHub Actions", "Firebase", "Real-time DB"],
     achievements: [
       "Improved UX by 27%",
-      "Setup CI/CD pipeline",
-      "Implemented state management",
+      "Built real-time messaging",
+      "Implemented social feed algorithms",
       "Enhanced app performance",
     ],
-    image: "🚀",
-    backgroundImage: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-    category: "mobile",
-    year: "2022",
-    users: "25K+",
-    impact: "+27% UX improvement",
-  },
-  {
-    id: "bitsoko",
-    title: "Bitsoko Mall Platform",
-    description: "Beacon-based mall engagement platform for retail businesses",
-    tech: ["React", "Node.js", "Beacon Technology", "MongoDB"],
-    achievements: [
-      "Built beacon integration",
-      "Created mall engagement system",
-      "Developed merchant dashboard",
-      "Real-time location tracking",
+    image: "�",
+    backgroundImage: "/projects/mash/banner.png",
+    screenshots: [
+      "/projects/mash/screenshot-01-dashboard.jpg",
+      "/projects/mash/screenshot-02-profile.jpg",
+      "/projects/mash/screenshot-03-features.webp",
     ],
-    image: "🛍️",
-    backgroundImage: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
-    category: "enterprise",
-    year: "2017-2019",
-    users: "5K+",
-    impact: "Retail innovation",
+    category: "social",
+    year: "2022-2023",
+    users: "20K+",
+    impact: "27% UX improvement",
   },
 ];
 
@@ -246,10 +349,10 @@ export default function ProjectShowcase() {
         return "bg-green-100 text-green-800";
       case "crypto":
         return "bg-orange-100 text-orange-800";
-      case "mobile":
+      case "personal":
         return "bg-blue-100 text-blue-800";
-      case "enterprise":
-        return "bg-blue-100 text-blue-800";
+      case "social":
+        return "bg-purple-100 text-purple-800";
       default:
         return "bg-slate-100 text-slate-800";
     }
@@ -261,9 +364,9 @@ export default function ProjectShowcase() {
         return "rgba(34, 197, 94, 0.2) 0%, rgba(22, 163, 74, 0.1) 100%";
       case "crypto":
         return "rgba(249, 115, 22, 0.2) 0%, rgba(234, 88, 12, 0.1) 100%";
-      case "mobile":
+      case "personal":
         return "rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%";
-      case "enterprise":
+      case "social":
         return "rgba(147, 51, 234, 0.2) 0%, rgba(126, 34, 206, 0.1) 100%";
       default:
         return "rgba(107, 114, 128, 0.2) 0%, rgba(75, 85, 99, 0.1) 100%";
@@ -288,7 +391,7 @@ export default function ProjectShowcase() {
           whileHover={{ scale: 1.05, backgroundColor: "rgb(226 232 240)" }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
         >
-          <span className="text-xs font-medium text-slate-700">4 Projects</span>
+          <span className="text-xs font-medium text-slate-700">7 Projects</span>
         </motion.div>
       </div>
 
@@ -324,9 +427,9 @@ export default function ProjectShowcase() {
                 <div
                   className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-500 group-hover:scale-105"
                   style={{
-                    backgroundImage: project.backgroundImage.startsWith('/')
+                    backgroundImage: project.backgroundImage.startsWith("/")
                       ? `url('${project.backgroundImage}')`
-                      : project.backgroundImage
+                      : project.backgroundImage,
                   }}
                 />
 
@@ -512,8 +615,18 @@ export default function ProjectShowcase() {
                   transition={{ duration: 0.15 }}
                   className="absolute top-3 right-3 md:top-4 md:right-4 lg:top-6 lg:right-6 z-50 text-white hover:text-gray-200 bg-black/20 hover:bg-black/40 rounded-full p-2 md:p-3 transition-all duration-300 backdrop-blur-md border border-white/20"
                 >
-                  <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    className="w-4 h-4 md:w-5 md:h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </motion.button>
 
@@ -522,13 +635,14 @@ export default function ProjectShowcase() {
                   <div
                     className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                     style={{
-                      backgroundImage: selectedProject.backgroundImage.startsWith('/')
-                        ? `url('${selectedProject.backgroundImage}')`
-                        : selectedProject.backgroundImage
+                      backgroundImage:
+                        selectedProject.backgroundImage.startsWith("/")
+                          ? `url('${selectedProject.backgroundImage}')`
+                          : selectedProject.backgroundImage,
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
-                  
+
                   {/* Project Title Overlay */}
                   <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 lg:p-8">
                     <div className="flex items-center gap-3 md:gap-4 mb-3 md:mb-4">
@@ -547,8 +661,12 @@ export default function ProjectShowcase() {
                             {selectedProject.category}
                           </span>
                           <span>{selectedProject.year}</span>
-                          {selectedProject.users && <span>• {selectedProject.users} users</span>}
-                          {selectedProject.impact && <span>• {selectedProject.impact}</span>}
+                          {selectedProject.users && (
+                            <span>• {selectedProject.users} users</span>
+                          )}
+                          {selectedProject.impact && (
+                            <span>• {selectedProject.impact}</span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -608,66 +726,77 @@ export default function ProjectShowcase() {
                       Key Achievements
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {selectedProject.achievements.map((achievement, index) => (
-                        <motion.div
-                          key={index}
-                          className="flex items-start gap-3 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200 hover:border-green-300 hover:shadow-md transition-all duration-300"
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.5 + index * 0.1 }}
-                          whileHover={{ scale: 1.02, x: 4 }}
-                        >
-                          <span className="text-green-600 text-lg font-bold mt-0.5">✓</span>
-                          <span className="text-slate-700 font-medium">{achievement}</span>
-                        </motion.div>
-                      ))}
+                      {selectedProject.achievements.map(
+                        (achievement, index) => (
+                          <motion.div
+                            key={index}
+                            className="flex items-start gap-3 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200 hover:border-green-300 hover:shadow-md transition-all duration-300"
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.5 + index * 0.1 }}
+                            whileHover={{ scale: 1.02, x: 4 }}
+                          >
+                            <span className="text-green-600 text-lg font-bold mt-0.5">
+                              ✓
+                            </span>
+                            <span className="text-slate-700 font-medium">
+                              {achievement}
+                            </span>
+                          </motion.div>
+                        )
+                      )}
                     </div>
                   </motion.div>
 
                   {/* Screenshots Gallery */}
-                  {selectedProject.screenshots && selectedProject.screenshots.length > 0 && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.6 }}
-                    >
-                      <h3 className="text-lg font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                        <span className="text-xl">📱</span>
-                        Screenshots
-                      </h3>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                        {selectedProject.screenshots.map((screenshot, index) => (
-                          <motion.div
-                            key={index}
-                            className="relative group cursor-pointer rounded-lg overflow-hidden bg-slate-100 aspect-[9/16] border border-slate-200 hover:border-blue-300 transition-all duration-300 shadow-sm hover:shadow-md"
-                            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            transition={{ 
-                              delay: 0.7 + index * 0.05,
-                              type: "spring",
-                              stiffness: 300,
-                              damping: 20
-                            }}
-                            whileHover={{ 
-                              scale: 1.1, 
-                              y: -8,
-                              zIndex: 10,
-                              transition: { duration: 0.2 }
-                            }}
-                            whileTap={{ scale: 0.95 }}
-                          >
-                            <img
-                              src={screenshot}
-                              alt={`${selectedProject.title} screenshot ${index + 1}`}
-                              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                            <div className="absolute inset-0 ring-2 ring-blue-500/50 ring-opacity-0 group-hover:ring-opacity-100 transition-all duration-300 rounded-lg" />
-                          </motion.div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
+                  {selectedProject.screenshots &&
+                    selectedProject.screenshots.length > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6 }}
+                      >
+                        <h3 className="text-lg font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                          <span className="text-xl">📱</span>
+                          Screenshots
+                        </h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                          {selectedProject.screenshots.map(
+                            (screenshot, index) => (
+                              <motion.div
+                                key={index}
+                                className="relative group cursor-pointer rounded-lg overflow-hidden bg-slate-100 aspect-[9/16] border border-slate-200 hover:border-blue-300 transition-all duration-300 shadow-sm hover:shadow-md"
+                                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                transition={{
+                                  delay: 0.7 + index * 0.05,
+                                  type: "spring",
+                                  stiffness: 300,
+                                  damping: 20,
+                                }}
+                                whileHover={{
+                                  scale: 1.1,
+                                  y: -8,
+                                  zIndex: 10,
+                                  transition: { duration: 0.2 },
+                                }}
+                                whileTap={{ scale: 0.95 }}
+                              >
+                                <img
+                                  src={screenshot}
+                                  alt={`${selectedProject.title} screenshot ${
+                                    index + 1
+                                  }`}
+                                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                <div className="absolute inset-0 ring-2 ring-blue-500/50 ring-opacity-0 group-hover:ring-opacity-100 transition-all duration-300 rounded-lg" />
+                              </motion.div>
+                            )
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
                 </div>
               </motion.div>
             </motion.div>

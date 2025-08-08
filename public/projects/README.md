@@ -3,6 +3,7 @@
 This folder contains all project-related images organized by project.
 
 ## Folder Structure
+
 ```
 projects/
 ├── wizglobal/
@@ -19,18 +20,21 @@ projects/
 ```
 
 ## Naming Convention
+
 - **banner.png**: Main project image used as card background and modal banner
 - **screenshot-XX-description**: App screenshots with descriptive names
   - Format: `screenshot-{number}-{description}.{ext}`
   - Example: `screenshot-01-dashboard.jpg`
 
 ## Usage
+
 - Banner images are used in project cards and modal headers
 - Screenshots are displayed in the modal gallery
 - All paths are relative to `/public/` in the Next.js app
 - Access via `/projects/{project-id}/{filename}`
 
 ## Adding New Projects
+
 1. Create new folder: `/public/projects/{project-id}/`
 2. Add banner.png for the main project image
 3. Add numbered screenshots with descriptive names

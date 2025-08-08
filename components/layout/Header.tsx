@@ -42,10 +42,13 @@ export default function Header({
       <div className="flex items-center gap-1.5 md:gap-3">
         {/* GitHub Stars Counter */}
         <motion.div
-          className="bg-white hover:bg-gray-50 text-slate-700 px-2 py-1.5 md:px-4 md:py-2 rounded-full font-medium transition-all duration-200 shadow-lg border border-slate-200 flex items-center gap-1 md:gap-2"
+          onClick={() => window.open("https://github.com/Gaseema", "_blank")}
+          className="bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 px-2 py-1.5 md:px-4 md:py-2 rounded-full font-medium transition-all duration-200 shadow-lg hover:shadow-xl border border-slate-200 flex items-center gap-1 md:gap-2 cursor-pointer"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
           <svg
             className="w-3 h-3 md:w-4 md:h-4 text-yellow-500"

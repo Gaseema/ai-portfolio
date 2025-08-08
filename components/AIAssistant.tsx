@@ -192,9 +192,13 @@ export default function AIAssistant({
 
         // Only show projects if specifically asking about projects/portfolio AND not asking about contact, CV, or tech
         const shouldShowProjects =
-          userAskedAboutProjects && !userAskedAboutContact && !userAskedAboutCV && !userAskedAboutTech;
+          userAskedAboutProjects &&
+          !userAskedAboutContact &&
+          !userAskedAboutCV &&
+          !userAskedAboutTech;
 
-        const shouldShowContact = userAskedAboutContact && !userAskedAboutCV && !userAskedAboutTech;
+        const shouldShowContact =
+          userAskedAboutContact && !userAskedAboutCV && !userAskedAboutTech;
         const shouldShowCV = userAskedAboutCV && !userAskedAboutTech;
         const shouldShowTech = userAskedAboutTech;
 

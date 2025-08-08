@@ -76,7 +76,7 @@ export default function HeroSection({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.4 }}
         >
-          Flutter Developer with 6+ years building fintech apps
+          Software Engineer with 6+ years building fintech apps
         </motion.p>
       </motion.div>
 

@@ -19,10 +19,12 @@ export default function HireTrigger() {
           <div className="text-2xl animate-bounce">📄</div>
           <div>
             <h3 className="font-semibold text-slate-800">View My Resume</h3>
-            <p className="text-sm text-slate-600">Check out my full credentials and experience</p>
+            <p className="text-sm text-slate-600">
+              Check out my full credentials and experience
+            </p>
           </div>
         </div>
-        
+
         <motion.button
           onClick={() => setShowModal(true)}
           className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
@@ -34,10 +36,7 @@ export default function HireTrigger() {
         </motion.button>
       </motion.div>
 
-      <TalentModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-      />
+      <TalentModal isOpen={showModal} onClose={() => setShowModal(false)} />
     </>
   );
 }
