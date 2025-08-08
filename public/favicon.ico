@@ -1,0 +1,68 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="15" fill="url(#gradient1)" stroke="url(#gradient2)" stroke-width="1"/>
+  
+  <!-- Inner orb -->
+  <circle cx="16" cy="16" r="10" fill="url(#gradient3)" opacity="0.8"/>
+  
+  <!-- Core orb -->
+  <circle cx="16" cy="16" r="6" fill="url(#gradient4)"/>
+  
+  <!-- Animated ring (represents the wavy border) -->
+  <circle cx="16" cy="16" r="12" fill="none" stroke="url(#gradient5)" stroke-width="0.5" opacity="0.6" stroke-dasharray="2,2">
+    <animateTransform
+      attributeName="transform"
+      type="rotate"
+      values="0 16 16;360 16 16"
+      dur="4s"
+      repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Smaller animated ring -->
+  <circle cx="16" cy="16" r="8" fill="none" stroke="url(#gradient6)" stroke-width="0.3" opacity="0.4" stroke-dasharray="1,1">
+    <animateTransform
+      attributeName="transform"
+      type="rotate"
+      values="360 16 16;0 16 16"
+      dur="3s"
+      repeatCount="indefinite"/>
+  </circle>
+  
+  <defs>
+    <!-- Main gradient - blue theme -->
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Border gradient -->
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Inner orb gradient -->
+    <radialGradient id="gradient3" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#93c5fd;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.8" />
+    </radialGradient>
+    
+    <!-- Core gradient -->
+    <radialGradient id="gradient4" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#dbeafe;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Animated ring gradients -->
+    <linearGradient id="gradient5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#93c5fd;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="gradient6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#dbeafe;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>
