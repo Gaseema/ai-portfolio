@@ -494,13 +494,14 @@ export default function ProjectShowcase() {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className="bg-white rounded-3xl max-w-6xl w-full modal-compact overflow-hidden border border-slate-200 relative shadow-2xl mx-auto"
+                className="bg-white rounded-3xl w-full overflow-hidden border border-slate-200 relative shadow-2xl mx-auto flex flex-col"
                 onClick={(e) => e.stopPropagation()}
                 style={{
                   position: "relative",
                   zIndex: 100000,
                   maxWidth: "min(95vw, 1200px)",
-                  maxHeight: "min(85vh, 900px)",
+                  maxHeight: "min(90vh, 800px)",
+                  height: "auto",
                 }}
               >
                 {/* Close Button */}
@@ -509,15 +510,15 @@ export default function ProjectShowcase() {
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setSelectedProject(null)}
                   transition={{ duration: 0.15 }}
-                  className="absolute top-6 right-6 z-50 text-white hover:text-gray-200 bg-black/20 hover:bg-black/40 rounded-full p-3 transition-all duration-300 backdrop-blur-md border border-white/20"
+                  className="absolute top-3 right-3 md:top-4 md:right-4 lg:top-6 lg:right-6 z-50 text-white hover:text-gray-200 bg-black/20 hover:bg-black/40 rounded-full p-2 md:p-3 transition-all duration-300 backdrop-blur-md border border-white/20"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </motion.button>
 
                 {/* Banner Section */}
-                <div className="relative h-64 overflow-hidden">
+                <div className="relative h-48 md:h-56 lg:h-64 overflow-hidden flex-shrink-0">
                   <div
                     className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                     style={{
@@ -529,19 +530,19 @@ export default function ProjectShowcase() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
                   
                   {/* Project Title Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 p-8">
-                    <div className="flex items-center gap-4 mb-4">
+                  <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 lg:p-8">
+                    <div className="flex items-center gap-3 md:gap-4 mb-3 md:mb-4">
                       <motion.div
-                        className="text-5xl filter drop-shadow-lg"
+                        className="text-3xl md:text-4xl lg:text-5xl filter drop-shadow-lg"
                         whileHover={{ scale: 1.1, rotate: 5 }}
                       >
                         {selectedProject.image}
                       </motion.div>
                       <div>
-                        <h1 className="text-3xl font-bold text-white mb-2 drop-shadow-lg">
+                        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-1 md:mb-2 drop-shadow-lg">
                           {selectedProject.title}
                         </h1>
-                        <div className="flex items-center gap-4 text-white/90">
+                        <div className="flex items-center gap-2 md:gap-4 text-white/90 text-sm md:text-base">
                           <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm border border-white/30">
                             {selectedProject.category}
                           </span>
@@ -555,7 +556,7 @@ export default function ProjectShowcase() {
                 </div>
 
                 {/* Content Area */}
-                <div className="modal-content overflow-y-auto max-h-[calc(85vh-12rem)] scrollbar-custom" style={{ padding: "1.5rem" }}>
+                <div className="flex-1 p-4 md:p-6 overflow-y-auto scrollbar-custom">
                   {/* Description */}
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
