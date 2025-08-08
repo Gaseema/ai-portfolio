@@ -55,7 +55,7 @@ const projects: Project[] = [
     id: "kuza",
     title: "Kuza Banking App",
     description:
-      "Digital banking solution with modern UI/UX and comprehensive financial services",
+      "Digital investment solution with modern UI/UX and comprehensive financial services",
     tech: ["Flutter", "Node.js", "PostgreSQL", "Firebase"],
     achievements: [
       "Reduced transaction time by 60%",
@@ -434,7 +434,7 @@ export default function ProjectShowcase() {
                 />
 
                 {/* Black Gradient Overlay for Text Readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
                 {/* Content Container */}
                 <div className="relative z-10 h-full flex flex-col p-6">
@@ -456,46 +456,46 @@ export default function ProjectShowcase() {
                     </motion.span>
                   </div>
 
-                  {/* Project Title & Description */}
-                  <div className="flex-grow">
+                  {/* Project Content - Restructured Layout */}
+                  <div className="flex-grow flex flex-col">
+                    {/* Spacer to push content to bottom */}
+                    <div className="flex-grow"></div>
+
+                    {/* App Name */}
                     <motion.h4
                       className="font-bold text-white text-lg mb-2 group-hover:text-gray-100 transition-colors duration-300 leading-tight drop-shadow-lg"
                       layout
                     >
                       {project.title}
                     </motion.h4>
+
+                    {/* Description - Right under title */}
                     <motion.p
-                      className="text-sm text-gray-200 mb-4 line-clamp-2 leading-relaxed drop-shadow-md"
+                      className="text-sm text-gray-200 mb-2 line-clamp-2 leading-relaxed drop-shadow-md"
                       layout
                     >
                       {project.description}
                     </motion.p>
-                  </div>
 
-                  {/* Stats & CTA */}
-                  <div className="mt-auto">
-                    <motion.div
-                      className="flex justify-between items-center text-xs mb-3"
-                      layout
-                    >
-                      <span className="text-gray-200 font-medium bg-black/40 px-2 py-1 rounded-lg backdrop-blur-md border border-white/20">
-                        {project.year}
-                      </span>
-                      {project.impact && (
-                        <span className="text-white font-semibold bg-black/50 px-2 py-1 rounded-lg backdrop-blur-md border border-white/30">
+                    {/* Impact Metrics - Right below description */}
+                    {project.impact && (
+                      <motion.div className="mb-4" layout>
+                        <span className="text-xs text-white font-semibold bg-black/50 px-2 py-1 rounded-lg backdrop-blur-md border border-white/30">
                           {project.impact}
                         </span>
-                      )}
-                    </motion.div>
+                      </motion.div>
+                    )}
+                  </div>
 
-                    {/* CTA Button */}
+                  {/* CTA Button - At Bottom */}
+                  <div className="mt-auto">
                     <motion.div
-                      className="flex items-center gap-2 text-sm text-blue-300 font-semibold group-hover:text-blue-200 transition-colors duration-300 bg-black/40 px-3 py-2 rounded-xl backdrop-blur-md border border-white/20"
+                      className="flex items-center justify-between text-sm font-semibold transition-colors duration-300 bg-white/90 hover:bg-white px-3 py-2 rounded-xl border border-white/30 text-slate-800"
                       layout
                     >
                       <span>View Details</span>
                       <motion.svg
-                        className="w-4 h-4"
+                        className="w-4 h-4 ml-auto"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -518,8 +518,10 @@ export default function ProjectShowcase() {
         </motion.div>
 
         {/* Mobile gradient indicator to show more content */}
-        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white/80 to-transparent pointer-events-none md:hidden" 
-             style={{ marginBottom: "3rem" }} />
+        <div
+          className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white/80 to-transparent pointer-events-none md:hidden"
+          style={{ marginBottom: "3rem" }}
+        />
 
         {/* Navigation Arrows - Below the list */}
         <div className="flex justify-end gap-2 mt-4">
