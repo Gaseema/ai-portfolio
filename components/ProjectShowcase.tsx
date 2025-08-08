@@ -399,7 +399,7 @@ export default function ProjectShowcase() {
       <div className="relative">
         <motion.div
           ref={scrollContainerRef}
-          className="flex gap-4 overflow-x-auto py-4 px-2 scrollbar-animated scroll-smooth"
+          className="flex gap-4 overflow-x-auto py-4 pl-4 pr-16 md:px-2 scrollbar-animated scroll-smooth"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -410,7 +410,7 @@ export default function ProjectShowcase() {
             <motion.div
               key={project.id}
               variants={cardVariants}
-              className="min-w-[280px] max-w-[280px] flex-shrink-0"
+              className="min-w-[260px] max-w-[260px] md:min-w-[280px] md:max-w-[280px] flex-shrink-0"
             >
               {/* Project Card with Background Image */}
               <motion.div
@@ -421,7 +421,7 @@ export default function ProjectShowcase() {
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setSelectedProject(project)}
                 transition={{ duration: 0.2 }}
-                className="relative bg-white backdrop-blur-sm rounded-2xl cursor-pointer border border-slate-200/60 hover:border-slate-300/80 hover:shadow-xl transition-all duration-500 group overflow-hidden aspect-[9/16] w-64"
+                className="relative bg-white backdrop-blur-sm rounded-2xl cursor-pointer border border-slate-200/60 hover:border-slate-300/80 hover:shadow-xl transition-all duration-500 group overflow-hidden aspect-[9/16] w-full"
               >
                 {/* Background Image */}
                 <div
@@ -516,6 +516,10 @@ export default function ProjectShowcase() {
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Mobile gradient indicator to show more content */}
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white/80 to-transparent pointer-events-none md:hidden" 
+             style={{ marginBottom: "3rem" }} />
 
         {/* Navigation Arrows - Below the list */}
         <div className="flex justify-end gap-2 mt-4">
