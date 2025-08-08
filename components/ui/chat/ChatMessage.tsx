@@ -4,6 +4,8 @@ import { forwardRef } from "react";
 import TypingText from "./TypingText";
 import ProjectShowcase from "../../ProjectShowcase";
 import ContactCard from "../../ContactCard";
+import HireTrigger from "../../HireTrigger";
+import TechStackShowcase from "../../TechStackShowcase";
 
 interface Message {
   role: "user" | "assistant";
@@ -28,10 +30,14 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
     const isUser = message.role === "user";
     const hasProjectTrigger = message.content.includes("CHECK_OUT_MY_PROJECTS");
     const hasContactTrigger = message.content.includes("SHOW_CONTACT_CARD");
+    const hasHireTrigger = message.content.includes("SHOW_HIRE_MODAL");
+    const hasTechTrigger = message.content.includes("SHOW_TECH_STACK");
 
     const cleanContent = message.content
       .replace("CHECK_OUT_MY_PROJECTS", "")
       .replace("SHOW_CONTACT_CARD", "")
+      .replace("SHOW_HIRE_MODAL", "")
+      .replace("SHOW_TECH_STACK", "")
       .trim();
 
     return (
@@ -76,6 +82,20 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
           {hasContactTrigger && !isTyping && (
             <div className="mt-4 animate-fadeIn">
               <ContactCard />
+            </div>
+          )}
+
+          {/* Show HireTrigger inline when message contains the hire trigger AND typing is complete */}
+          {hasHireTrigger && !isTyping && (
+            <div className="mt-4 animate-fadeIn">
+              <HireTrigger />
+            </div>
+          )}
+
+          {/* Show TechStackShowcase inline when message contains the tech trigger AND typing is complete */}
+          {hasTechTrigger && !isTyping && (
+            <div className="mt-4 animate-fadeIn">
+              <TechStackShowcase />
             </div>
           )}
 

@@ -145,6 +145,35 @@ export default function AIAssistant({
           "hire",
         ];
 
+        const cvKeywords = [
+          "cv",
+          "resume",
+          "curriculum",
+          "qualifications",
+          "credentials",
+          "download resume",
+          "see resume",
+          "show resume",
+          "view cv",
+          "your cv",
+          "your resume",
+        ];
+
+        const techKeywords = [
+          "technology",
+          "technologies",
+          "tech stack",
+          "programming languages",
+          "what do you use",
+          "tools",
+          "frameworks",
+          "languages",
+          "skills",
+          "technical skills",
+          "development tools",
+          "coding languages",
+        ];
+
         const userAskedAboutProjects = projectKeywords.some((keyword) =>
           text.toLowerCase().includes(keyword)
         );
@@ -153,11 +182,21 @@ export default function AIAssistant({
           text.toLowerCase().includes(keyword)
         );
 
-        // Only show projects if specifically asking about projects/portfolio AND not asking about contact
-        const shouldShowProjects =
-          userAskedAboutProjects && !userAskedAboutContact;
+        const userAskedAboutCV = cvKeywords.some((keyword) =>
+          text.toLowerCase().includes(keyword)
+        );
 
-        const shouldShowContact = userAskedAboutContact;
+        const userAskedAboutTech = techKeywords.some((keyword) =>
+          text.toLowerCase().includes(keyword)
+        );
+
+        // Only show projects if specifically asking about projects/portfolio AND not asking about contact, CV, or tech
+        const shouldShowProjects =
+          userAskedAboutProjects && !userAskedAboutContact && !userAskedAboutCV && !userAskedAboutTech;
+
+        const shouldShowContact = userAskedAboutContact && !userAskedAboutCV && !userAskedAboutTech;
+        const shouldShowCV = userAskedAboutCV && !userAskedAboutTech;
+        const shouldShowTech = userAskedAboutTech;
 
         // Check if response indicates to show projects OR user asked specifically about projects
         if (
@@ -198,6 +237,46 @@ export default function AIAssistant({
               {
                 role: "assistant" as const,
                 content: contactContent,
+                timestamp: new Date(),
+              },
+            ];
+            setTypingMessageIndex(newMessages.length - 1);
+            // Switch to listening mode for typing animation and stop loading
+            setIsOrbActive(false);
+            setIsOrbListening(true);
+            setLoading(false); // Stop loading when typing starts
+            return newMessages;
+          });
+        } else if (shouldShowCV) {
+          // Add CV/resume response with hire modal trigger
+          const cvContent = data.result + " SHOW_HIRE_MODAL";
+
+          setMessages((prev) => {
+            const newMessages: Message[] = [
+              ...prev,
+              {
+                role: "assistant" as const,
+                content: cvContent,
+                timestamp: new Date(),
+              },
+            ];
+            setTypingMessageIndex(newMessages.length - 1);
+            // Switch to listening mode for typing animation and stop loading
+            setIsOrbActive(false);
+            setIsOrbListening(true);
+            setLoading(false); // Stop loading when typing starts
+            return newMessages;
+          });
+        } else if (shouldShowTech) {
+          // Add tech stack response with tech showcase trigger
+          const techContent = data.result + " SHOW_TECH_STACK";
+
+          setMessages((prev) => {
+            const newMessages: Message[] = [
+              ...prev,
+              {
+                role: "assistant" as const,
+                content: techContent,
                 timestamp: new Date(),
               },
             ];

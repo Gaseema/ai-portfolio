@@ -14,9 +14,16 @@ export default function ContactCard() {
     {
       icon: "💼",
       label: "LinkedIn",
-      value: "linkedin.com/in/gaseema",
-      href: "https://linkedin.com/in/gaseema",
+      value: "linkedin.com/in/gaseema-ndung-u",
+      href: "https://www.linkedin.com/in/gaseema-ndung-u-b99502b6/",
       description: "Professional networking",
+    },
+    {
+      icon: "🌐",
+      label: "Website",
+      value: "gaseema.xyz",
+      href: "http://gaseema.xyz/",
+      description: "Visit my portfolio",
     },
     {
       icon: "💬",
@@ -24,13 +31,6 @@ export default function ContactCard() {
       value: "+254 721 882 694",
       href: "https://wa.me/254721882694",
       description: "Quick chat & calls",
-    },
-    {
-      icon: "🌐",
-      label: "Portfolio",
-      value: "gaseema.dev",
-      href: "https://gaseema.dev",
-      description: "More about my work",
     },
   ];
 
@@ -82,7 +82,7 @@ export default function ContactCard() {
                 <div className="font-semibold text-slate-800 text-sm group-hover:text-blue-600 transition-colors">
                   {contact.label}
                 </div>
-                <div className="text-xs text-slate-600 truncate">
+                <div className="text-xs text-blue-600 hover:text-blue-800 truncate font-medium underline decoration-transparent group-hover:decoration-blue-600 transition-all">
                   {contact.value}
                 </div>
                 <div className="text-xs text-slate-500 mt-1">

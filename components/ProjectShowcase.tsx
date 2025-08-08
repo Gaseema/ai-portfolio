@@ -18,6 +18,7 @@ interface Project {
   achievements: string[];
   image: string;
   backgroundImage: string;
+  screenshots?: string[];
   category: "fintech" | "crypto" | "enterprise" | "mobile";
   year: string;
   users?: string;
@@ -38,7 +39,12 @@ const projects: Project[] = [
       "Setup automated CI/CD pipeline",
     ],
     image: "🏦",
-    backgroundImage: "/project1.png",
+    backgroundImage: "/projects/wizglobal/banner.png",
+    screenshots: [
+      "/projects/wizglobal/screenshot-01-dashboard.jpg",
+      "/projects/wizglobal/screenshot-02-profile.jpg",
+      "/projects/wizglobal/screenshot-03-features.webp"
+    ],
     category: "fintech",
     year: "2023-Now",
     users: "50K+",
@@ -57,7 +63,12 @@ const projects: Project[] = [
       "Implemented crypto wallet features",
     ],
     image: "₿",
-    backgroundImage: "/project2.png",
+    backgroundImage: "/projects/bitlipa/banner.png",
+    screenshots: [
+      "/projects/bitlipa/screenshot-01-wallet.jpg",
+      "/projects/bitlipa/screenshot-02-transactions.jpg",
+      "/projects/bitlipa/screenshot-03-exchange.webp"
+    ],
     category: "crypto",
     year: "2020-2021",
     users: "10K+",
@@ -307,7 +318,7 @@ export default function ProjectShowcase() {
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setSelectedProject(project)}
                 transition={{ duration: 0.2 }}
-                className="relative bg-white backdrop-blur-sm rounded-2xl cursor-pointer border border-slate-200/60 hover:border-slate-300/80 hover:shadow-xl transition-all duration-500 group overflow-hidden h-80"
+                className="relative bg-white backdrop-blur-sm rounded-2xl cursor-pointer border border-slate-200/60 hover:border-slate-300/80 hover:shadow-xl transition-all duration-500 group overflow-hidden aspect-[9/16] w-64"
               >
                 {/* Background Image */}
                 <div
@@ -483,130 +494,180 @@ export default function ProjectShowcase() {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-slate-200 relative shadow-2xl mx-auto scrollbar-custom"
+                className="bg-white rounded-3xl max-w-6xl w-full modal-compact overflow-hidden border border-slate-200 relative shadow-2xl mx-auto"
                 onClick={(e) => e.stopPropagation()}
                 style={{
                   position: "relative",
                   zIndex: 100000,
-                  maxWidth: "min(90vw, 900px)",
-                  maxHeight: "min(90vh, 800px)",
+                  maxWidth: "min(95vw, 1200px)",
+                  maxHeight: "min(85vh, 900px)",
                 }}
               >
                 {/* Close Button */}
                 <motion.button
-                  whileHover={{
-                    scale: 1.1,
-                    rotate: 90,
-                  }}
+                  whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setSelectedProject(null)}
                   transition={{ duration: 0.15 }}
-                  className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-full p-3 transition-all duration-300 backdrop-blur-md border border-slate-200"
+                  className="absolute top-6 right-6 z-50 text-white hover:text-gray-200 bg-black/20 hover:bg-black/40 rounded-full p-3 transition-all duration-300 backdrop-blur-md border border-white/20"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </motion.button>
 
-                {/* Project Header */}
-                <div className="flex items-start gap-4 mb-6">
-                  <motion.div
-                    className="text-4xl"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                  >
-                    {selectedProject.image}
-                  </motion.div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h2 className="text-2xl font-bold text-slate-900">
-                        {selectedProject.title}
-                      </h2>
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${getCategoryColor(
-                          selectedProject.category
-                        )}`}
+                {/* Banner Section */}
+                <div className="relative h-64 overflow-hidden">
+                  <div
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                    style={{
+                      backgroundImage: selectedProject.backgroundImage.startsWith('/')
+                        ? `url('${selectedProject.backgroundImage}')`
+                        : selectedProject.backgroundImage
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+                  
+                  {/* Project Title Overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 p-8">
+                    <div className="flex items-center gap-4 mb-4">
+                      <motion.div
+                        className="text-5xl filter drop-shadow-lg"
+                        whileHover={{ scale: 1.1, rotate: 5 }}
                       >
-                        {selectedProject.category}
-                      </span>
-                    </div>
-                    <p className="text-slate-600 mb-3">
-                      {selectedProject.description}
-                    </p>
-                    <div className="flex items-center gap-4 text-sm text-slate-500">
-                      <span>{selectedProject.year}</span>
-                      {selectedProject.users && (
-                        <span>• {selectedProject.users} users</span>
-                      )}
-                      {selectedProject.impact && (
-                        <span>• {selectedProject.impact}</span>
-                      )}
+                        {selectedProject.image}
+                      </motion.div>
+                      <div>
+                        <h1 className="text-3xl font-bold text-white mb-2 drop-shadow-lg">
+                          {selectedProject.title}
+                        </h1>
+                        <div className="flex items-center gap-4 text-white/90">
+                          <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm border border-white/30">
+                            {selectedProject.category}
+                          </span>
+                          <span>{selectedProject.year}</span>
+                          {selectedProject.users && <span>• {selectedProject.users} users</span>}
+                          {selectedProject.impact && <span>• {selectedProject.impact}</span>}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Tech Stack */}
-                <motion.div
-                  className="mb-6"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <h3 className="text-lg font-semibold text-slate-900 mb-3">
-                    Tech Stack
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProject.tech.map((tech, index) => (
-                      <motion.span
-                        key={tech}
-                        className="px-3 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.3 + index * 0.05 }}
-                        whileHover={{ scale: 1.05 }}
-                      >
-                        {tech}
-                      </motion.span>
-                    ))}
-                  </div>
-                </motion.div>
+                {/* Content Area */}
+                <div className="modal-content overflow-y-auto max-h-[calc(85vh-12rem)] scrollbar-custom" style={{ padding: "1.5rem" }}>
+                  {/* Description */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="mb-8"
+                  >
+                    <p className="text-lg text-slate-700 leading-relaxed">
+                      {selectedProject.description}
+                    </p>
+                  </motion.div>
 
-                {/* Achievements */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <h3 className="text-lg font-semibold text-slate-900 mb-3">
-                    Key Achievements
-                  </h3>
-                  <div className="space-y-3">
-                    {selectedProject.achievements.map((achievement, index) => (
-                      <motion.div
-                        key={index}
-                        className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.5 + index * 0.1 }}
-                        whileHover={{ scale: 1.02 }}
-                      >
-                        <span className="text-green-600 mt-1">✓</span>
-                        <span className="text-slate-700 text-sm">
-                          {achievement}
-                        </span>
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
+                  {/* Tech Stack */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="mb-8"
+                  >
+                    <h3 className="text-xl font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                      <span className="text-2xl">🛠️</span>
+                      Tech Stack
+                    </h3>
+                    <div className="flex flex-wrap gap-3">
+                      {selectedProject.tech.map((tech, index) => (
+                        <motion.span
+                          key={tech}
+                          className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full text-sm font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.3 + index * 0.05 }}
+                          whileHover={{ scale: 1.05, y: -2 }}
+                        >
+                          {tech}
+                        </motion.span>
+                      ))}
+                    </div>
+                  </motion.div>
+
+                  {/* Key Achievements */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="mb-8"
+                  >
+                    <h3 className="text-xl font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                      <span className="text-2xl">🎯</span>
+                      Key Achievements
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {selectedProject.achievements.map((achievement, index) => (
+                        <motion.div
+                          key={index}
+                          className="flex items-start gap-3 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200 hover:border-green-300 hover:shadow-md transition-all duration-300"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.5 + index * 0.1 }}
+                          whileHover={{ scale: 1.02, x: 4 }}
+                        >
+                          <span className="text-green-600 text-lg font-bold mt-0.5">✓</span>
+                          <span className="text-slate-700 font-medium">{achievement}</span>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
+
+                  {/* Screenshots Gallery */}
+                  {selectedProject.screenshots && selectedProject.screenshots.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6 }}
+                    >
+                      <h3 className="text-lg font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                        <span className="text-xl">📱</span>
+                        Screenshots
+                      </h3>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                        {selectedProject.screenshots.map((screenshot, index) => (
+                          <motion.div
+                            key={index}
+                            className="relative group cursor-pointer rounded-lg overflow-hidden bg-slate-100 aspect-[9/16] border border-slate-200 hover:border-blue-300 transition-all duration-300 shadow-sm hover:shadow-md"
+                            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            transition={{ 
+                              delay: 0.7 + index * 0.05,
+                              type: "spring",
+                              stiffness: 300,
+                              damping: 20
+                            }}
+                            whileHover={{ 
+                              scale: 1.1, 
+                              y: -8,
+                              zIndex: 10,
+                              transition: { duration: 0.2 }
+                            }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <img
+                              src={screenshot}
+                              alt={`${selectedProject.title} screenshot ${index + 1}`}
+                              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <div className="absolute inset-0 ring-2 ring-blue-500/50 ring-opacity-0 group-hover:ring-opacity-100 transition-all duration-300 rounded-lg" />
+                          </motion.div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
               </motion.div>
             </motion.div>
           )}

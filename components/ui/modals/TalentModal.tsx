@@ -1,15 +1,25 @@
 "use client";
 
+import { useState } from "react";
+import CVViewer from "../../CVViewer";
+
 interface TalentModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
 export default function TalentModal({ isOpen, onClose }: TalentModalProps) {
+  const [showCVViewer, setShowCVViewer] = useState(false);
+
   if (!isOpen) return null;
 
+  const handleCVClick = () => {
+    setShowCVViewer(true);
+  };
+
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <>
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl p-4 md:p-8 max-w-lg w-full shadow-2xl animate-fadeIn">
         <div className="flex justify-between items-start mb-4 md:mb-6">
           <div className="flex items-center gap-2 md:gap-3">
@@ -138,16 +148,31 @@ export default function TalentModal({ isOpen, onClose }: TalentModalProps) {
             >
               💬 Let's Chat!
             </a>
-            <a
-              href="/resume.pdf"
-              target="_blank"
+            <button
+              onClick={handleCVClick}
               className="bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 text-slate-700 py-2 md:py-3 px-4 md:px-6 rounded-xl font-medium transition-all duration-300 text-center shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 text-xs md:text-sm"
             >
               📄 Resume
-            </a>
+            </button>
           </div>
         </div>
       </div>
-    </div>
+      </div>
+
+      {/* CV Viewer Integration */}
+      {showCVViewer && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60]">
+          <CVViewer />
+          <button
+            onClick={() => setShowCVViewer(false)}
+            className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-full text-white transition-all z-[70]"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
+    </>
   );
 }

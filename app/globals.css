@@ -4,6 +4,40 @@
   font-family: var(--font-inter), Inter, system-ui, sans-serif;
 }
 
+/* Responsive base settings for low resolution screens */
+@media (max-height: 800px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (max-height: 720px) {
+  html {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 1366px) and (max-height: 768px) {
+  html {
+    font-size: 12px;
+  }
+}
+
+/* Responsive modal sizing */
+@media (max-height: 800px) {
+  .modal-compact {
+    max-height: 85vh !important;
+  }
+  
+  .modal-content {
+    padding: 1rem !important;
+  }
+  
+  .modal-header {
+    padding: 1rem !important;
+  }
+}
+
 .backdrop-blur-\[50px\] {
   --tw-backdrop-blur: blur(50px);
   --tw-backdrop-saturate: saturate(180%);
