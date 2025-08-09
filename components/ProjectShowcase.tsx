@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import {
   openSpring,
   closeSpring,
@@ -244,6 +245,47 @@ export default function ProjectShowcase() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [imagesLoaded, setImagesLoaded] = useState<Set<string>>(new Set());
+
+  // Preload images with priority for first few images
+  useEffect(() => {
+    const preloadImages = () => {
+      projects.forEach((project, index) => {
+        if (project.backgroundImage.startsWith("/")) {
+          const img = document.createElement("img");
+
+          // Add priority loading for first 3 images (likely visible in viewport)
+          if (index < 3) {
+            img.loading = "eager";
+            img.fetchPriority = "high";
+          }
+
+          img.onload = () => {
+            setImagesLoaded((prev) =>
+              new Set(prev).add(project.backgroundImage)
+            );
+          };
+          img.onerror = () => {
+            console.warn(`Failed to preload image: ${project.backgroundImage}`);
+          };
+          img.src = project.backgroundImage;
+        }
+
+        // Also preload screenshots (lower priority)
+        if (project.screenshots) {
+          project.screenshots.forEach((screenshot) => {
+            const img = document.createElement("img");
+            img.loading = "lazy";
+            img.src = screenshot;
+          });
+        }
+      });
+    };
+
+    // Delay preloading slightly to not block initial render
+    const timer = setTimeout(preloadImages, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Check scroll position
   const checkScrollPosition = () => {
@@ -410,7 +452,7 @@ export default function ProjectShowcase() {
             <motion.div
               key={project.id}
               variants={cardVariants}
-              className="min-w-[260px] max-w-[260px] md:min-w-[280px] md:max-w-[280px] flex-shrink-0"
+              className="min-w-[182px] max-w-[182px] md:min-w-[196px] md:max-w-[196px] flex-shrink-0"
             >
               {/* Project Card with Background Image */}
               <motion.div
@@ -425,7 +467,11 @@ export default function ProjectShowcase() {
               >
                 {/* Background Image */}
                 <div
-                  className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-500 group-hover:scale-105"
+                  className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-500 group-hover:scale-105 ${
+                    imagesLoaded.has(project.backgroundImage)
+                      ? "opacity-100"
+                      : "opacity-0 bg-gradient-to-br from-slate-100 to-slate-200"
+                  }`}
                   style={{
                     backgroundImage: project.backgroundImage.startsWith("/")
                       ? `url('${project.backgroundImage}')`
@@ -433,22 +479,27 @@ export default function ProjectShowcase() {
                   }}
                 />
 
+                {/* Loading skeleton for background image */}
+                {!imagesLoaded.has(project.backgroundImage) && (
+                  <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 animate-pulse" />
+                )}
+
                 {/* Black Gradient Overlay for Text Readability */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
                 {/* Content Container */}
-                <div className="relative z-10 h-full flex flex-col p-6">
+                <div className="relative z-10 h-full flex flex-col p-4">
                   {/* Header: Icon & Category */}
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-3">
                     <motion.div
-                      className="text-4xl filter drop-shadow-lg"
+                      className="text-3xl filter drop-shadow-lg"
                       whileHover={{ scale: 1.1 }}
                       transition={{ duration: 0.2 }}
                     >
                       {project.image}
                     </motion.div>
                     <motion.span
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold border backdrop-blur-md bg-black/20 text-white border-white/30`}
+                      className={`px-2 py-1 rounded-lg text-xs font-semibold border backdrop-blur-md bg-black/20 text-white border-white/30`}
                       whileHover={{ scale: 1.05 }}
                       transition={{ duration: 0.15 }}
                     >
@@ -463,7 +514,7 @@ export default function ProjectShowcase() {
 
                     {/* App Name */}
                     <motion.h4
-                      className="font-bold text-white text-lg mb-2 group-hover:text-gray-100 transition-colors duration-300 leading-tight drop-shadow-lg"
+                      className="font-bold text-white text-base mb-1.5 group-hover:text-gray-100 transition-colors duration-300 leading-tight drop-shadow-lg"
                       layout
                     >
                       {project.title}
@@ -471,7 +522,7 @@ export default function ProjectShowcase() {
 
                     {/* Description - Right under title */}
                     <motion.p
-                      className="text-sm text-gray-200 mb-2 line-clamp-2 leading-relaxed drop-shadow-md"
+                      className="text-xs text-gray-200 mb-1.5 line-clamp-2 leading-relaxed drop-shadow-md"
                       layout
                     >
                       {project.description}
@@ -479,8 +530,8 @@ export default function ProjectShowcase() {
 
                     {/* Impact Metrics - Right below description */}
                     {project.impact && (
-                      <motion.div className="mb-4" layout>
-                        <span className="text-xs text-white font-semibold bg-black/50 px-2 py-1 rounded-lg backdrop-blur-md border border-white/30">
+                      <motion.div className="mb-3" layout>
+                        <span className="text-xs text-white font-semibold bg-black/50 px-1.5 py-0.5 rounded-md backdrop-blur-md border border-white/30">
                           {project.impact}
                         </span>
                       </motion.div>
@@ -490,12 +541,12 @@ export default function ProjectShowcase() {
                   {/* CTA Button - At Bottom */}
                   <div className="mt-auto">
                     <motion.div
-                      className="flex items-center justify-between text-sm font-semibold transition-colors duration-300 bg-white/90 hover:bg-white px-3 py-2 rounded-xl border border-white/30 text-slate-800"
+                      className="flex items-center justify-between text-xs font-semibold transition-colors duration-300 bg-white/90 hover:bg-white px-2.5 py-1.5 rounded-lg border border-white/30 text-slate-800"
                       layout
                     >
                       <span>View Details</span>
                       <motion.svg
-                        className="w-4 h-4 ml-auto"
+                        className="w-3 h-3 ml-auto"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -603,13 +654,13 @@ export default function ProjectShowcase() {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className="bg-white rounded-3xl w-full overflow-hidden border border-slate-200 relative shadow-2xl mx-auto flex flex-col"
+                className="bg-white rounded-2xl w-full overflow-hidden border border-slate-200 relative shadow-xl mx-auto flex flex-col"
                 onClick={(e) => e.stopPropagation()}
                 style={{
                   position: "relative",
                   zIndex: 100000,
-                  maxWidth: "min(95vw, 1200px)",
-                  maxHeight: "min(90vh, 800px)",
+                  maxWidth: "min(90vw, 900px)",
+                  maxHeight: "min(85vh, 650px)",
                   height: "auto",
                 }}
               >
@@ -619,10 +670,10 @@ export default function ProjectShowcase() {
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setSelectedProject(null)}
                   transition={{ duration: 0.15 }}
-                  className="absolute top-3 right-3 md:top-4 md:right-4 lg:top-6 lg:right-6 z-50 text-white hover:text-gray-200 bg-black/20 hover:bg-black/40 rounded-full p-2 md:p-3 transition-all duration-300 backdrop-blur-md border border-white/20"
+                  className="absolute top-2 right-2 md:top-3 md:right-3 z-50 text-white hover:text-gray-200 bg-black/20 hover:bg-black/40 rounded-full p-1.5 md:p-2 transition-all duration-300 backdrop-blur-md border border-white/20"
                 >
                   <svg
-                    className="w-4 h-4 md:w-5 md:h-5"
+                    className="w-3 h-3 md:w-4 md:h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -637,7 +688,7 @@ export default function ProjectShowcase() {
                 </motion.button>
 
                 {/* Banner Section */}
-                <div className="relative h-48 md:h-56 lg:h-64 overflow-hidden flex-shrink-0">
+                <div className="relative h-32 md:h-40 overflow-hidden flex-shrink-0">
                   <div
                     className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                     style={{
@@ -650,20 +701,20 @@ export default function ProjectShowcase() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
 
                   {/* Project Title Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 lg:p-8">
-                    <div className="flex items-center gap-3 md:gap-4 mb-3 md:mb-4">
+                  <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
+                    <div className="flex items-center gap-2 md:gap-3 mb-2">
                       <motion.div
-                        className="text-3xl md:text-4xl lg:text-5xl filter drop-shadow-lg"
+                        className="text-2xl md:text-3xl filter drop-shadow-lg"
                         whileHover={{ scale: 1.1, rotate: 5 }}
                       >
                         {selectedProject.image}
                       </motion.div>
                       <div>
-                        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-1 md:mb-2 drop-shadow-lg">
+                        <h1 className="text-lg md:text-xl font-bold text-white mb-1 drop-shadow-lg">
                           {selectedProject.title}
                         </h1>
-                        <div className="flex items-center gap-2 md:gap-4 text-white/90 text-sm md:text-base">
-                          <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm border border-white/30">
+                        <div className="flex items-center gap-1 md:gap-2 text-white/90 text-xs md:text-sm">
+                          <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs font-medium backdrop-blur-sm border border-white/30">
                             {selectedProject.category}
                           </span>
                           <span>{selectedProject.year}</span>
@@ -680,15 +731,15 @@ export default function ProjectShowcase() {
                 </div>
 
                 {/* Content Area */}
-                <div className="flex-1 p-4 md:p-6 overflow-y-auto scrollbar-custom">
+                <div className="flex-1 p-3 md:p-4 overflow-y-auto scrollbar-custom">
                   {/* Description */}
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="mb-8"
+                    className="mb-4"
                   >
-                    <p className="text-lg text-slate-700 leading-relaxed">
+                    <p className="text-sm text-slate-700 leading-relaxed">
                       {selectedProject.description}
                     </p>
                   </motion.div>
@@ -698,21 +749,21 @@ export default function ProjectShowcase() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="mb-8"
+                    className="mb-4"
                   >
-                    <h3 className="text-xl font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                      <span className="text-2xl">🛠️</span>
+                    <h3 className="text-base font-semibold text-slate-900 mb-2 flex items-center gap-1.5">
+                      <span className="text-lg">🛠️</span>
                       Tech Stack
                     </h3>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-2">
                       {selectedProject.tech.map((tech, index) => (
                         <motion.span
                           key={tech}
-                          className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full text-sm font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                          className="px-3 py-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full text-xs font-medium shadow-md hover:shadow-lg transition-all duration-300"
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: 0.3 + index * 0.05 }}
-                          whileHover={{ scale: 1.05, y: -2 }}
+                          whileHover={{ scale: 1.05, y: -1 }}
                         >
                           {tech}
                         </motion.span>
@@ -725,27 +776,27 @@ export default function ProjectShowcase() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="mb-8"
+                    className="mb-4"
                   >
-                    <h3 className="text-xl font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                      <span className="text-2xl">🎯</span>
+                    <h3 className="text-base font-semibold text-slate-900 mb-2 flex items-center gap-1.5">
+                      <span className="text-lg">🎯</span>
                       Key Achievements
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       {selectedProject.achievements.map(
                         (achievement, index) => (
                           <motion.div
                             key={index}
-                            className="flex items-start gap-3 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200 hover:border-green-300 hover:shadow-md transition-all duration-300"
+                            className="flex items-start gap-2 p-2 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200 hover:border-green-300 hover:shadow-sm transition-all duration-300"
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.5 + index * 0.1 }}
-                            whileHover={{ scale: 1.02, x: 4 }}
+                            whileHover={{ scale: 1.01, x: 2 }}
                           >
-                            <span className="text-green-600 text-lg font-bold mt-0.5">
+                            <span className="text-green-600 text-sm font-bold mt-0.5">
                               ✓
                             </span>
-                            <span className="text-slate-700 font-medium">
+                            <span className="text-slate-700 font-medium text-sm">
                               {achievement}
                             </span>
                           </motion.div>
@@ -762,16 +813,16 @@ export default function ProjectShowcase() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.6 }}
                       >
-                        <h3 className="text-lg font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                          <span className="text-xl">📱</span>
+                        <h3 className="text-base font-semibold text-slate-900 mb-2 flex items-center gap-1.5">
+                          <span className="text-lg">📱</span>
                           Screenshots
                         </h3>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
                           {selectedProject.screenshots.map(
                             (screenshot, index) => (
                               <motion.div
                                 key={index}
-                                className="relative group cursor-pointer rounded-lg overflow-hidden bg-slate-100 aspect-[9/16] border border-slate-200 hover:border-blue-300 transition-all duration-300 shadow-sm hover:shadow-md"
+                                className="relative group cursor-pointer rounded-md overflow-hidden bg-slate-100 aspect-[9/16] border border-slate-200 hover:border-blue-300 transition-all duration-300 shadow-sm hover:shadow-md"
                                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 transition={{
@@ -781,8 +832,8 @@ export default function ProjectShowcase() {
                                   damping: 20,
                                 }}
                                 whileHover={{
-                                  scale: 1.1,
-                                  y: -8,
+                                  scale: 1.05,
+                                  y: -4,
                                   zIndex: 10,
                                   transition: { duration: 0.2 },
                                 }}
