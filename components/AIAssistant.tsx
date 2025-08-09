@@ -456,7 +456,7 @@ export default function AIAssistant({
         </div>
 
         {/* Fixed Bottom Section: Quick Questions + Input */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white/40 backdrop-blur-[50px] border-t border-white/30 z-50 rounded-3xl mb-5">
+        <div className="fixed bottom-0 left-0 right-0 custom-blur-bar border-t border-white/30 z-50 rounded-3xl mb-5">
           {/* Compact Quick Questions */}
           {showSuggestions && (
             <div className="px-6 py-2 border-b border-white/20">

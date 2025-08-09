@@ -1,3 +1,9 @@
+/* Custom blur bar for chat input: solid white with opacity and strong blur, cross-browser */
+.custom-blur-bar {
+  background: rgba(255,255,255,0.85);
+  -webkit-backdrop-filter: blur(50px) saturate(180%) brightness(110%);
+  backdrop-filter: blur(50px) saturate(180%) brightness(110%);
+}
 @import "tailwindcss";
 
 .font-inter {

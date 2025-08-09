@@ -3,13 +3,102 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
-import {
-  openSpring,
-  closeSpring,
-  cardSpring,
-  expandSpring,
-} from "./animations";
+
+// Modal for viewing achievement screenshots
+type AchievementModalProps = {
+  open: boolean;
+  onClose: () => void;
+  screenshots?: string[];
+  index: number;
+  setIndex: React.Dispatch<React.SetStateAction<number>>;
+  title: string;
+};
+
+function AchievementModal({
+  open,
+  onClose,
+  screenshots,
+  index,
+  setIndex,
+  title,
+}: AchievementModalProps) {
+  if (!open || !screenshots || screenshots.length === 0) return null;
+  return (
+    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/70 backdrop-blur-sm">
+      <div className="relative bg-white rounded-2xl shadow-2xl max-w-xs sm:max-w-md md:max-w-lg w-full p-2 sm:p-4 flex flex-col items-center">
+        <button
+          className="absolute top-2 right-2 bg-black/10 hover:bg-black/20 rounded-full p-1.5 text-slate-700"
+          onClick={onClose}
+          aria-label="Close"
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+        <div className="flex items-center gap-2 mb-2">
+          <button
+            className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 disabled:opacity-40"
+            onClick={() => setIndex((i) => Math.max(i - 1, 0))}
+            disabled={index === 0}
+            aria-label="Previous"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+          <span className="text-xs text-slate-500">{title}</span>
+          <button
+            className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 disabled:opacity-40"
+            onClick={() =>
+              setIndex((i) => Math.min(i + 1, screenshots.length - 1))
+            }
+            disabled={index === screenshots.length - 1}
+            aria-label="Next"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
+        </div>
+        <img
+          src={screenshots[index]}
+          alt={title + " screenshot"}
+          className="rounded-xl max-h-[60vh] w-auto object-contain border border-slate-200 shadow"
+        />
+      </div>
+    </div>
+  );
+}
 
 interface Project {
   id: string;
@@ -27,30 +116,36 @@ interface Project {
 }
 
 const projects: Project[] = [
-  // Fintech Apps Category
+  // Personal Apps Category
   {
-    id: "oldmutual",
-    title: "OldMutual Mobile App",
+    id: "agentbay",
+    title: "AgentBay",
     description:
-      "Premium banking and investment app for OldMutual clients with advanced portfolio management",
-    tech: ["Flutter", "Firebase", "CI/CD", "Codemagic", "REST APIs"],
+      "AI-powered real estate platform connecting agents with clients through intelligent matching",
+    tech: [
+      "Flutter",
+      "AI/ML",
+      "Firebase",
+      "Google Maps API",
+      "Push Notifications",
+    ],
     achievements: [
-      "Implemented secure biometric authentication",
-      "Built real-time portfolio tracking",
-      "Optimized app performance by 40%",
-      "Integrated with core banking systems",
+      "Built AI property matching algorithm",
+      "Integrated real-time chat system",
+      "Implemented geolocation features",
+      "Achieved 95% user satisfaction",
     ],
-    image: "🏦",
-    backgroundImage: "/projects/oldmutual/banner.png",
+    image: "🏠",
+    backgroundImage: "/projects/agentbay/banner.png",
     screenshots: [
-      "/projects/oldmutual/screenshot-01-dashboard.jpg",
-      "/projects/oldmutual/screenshot-02-profile.jpg",
-      "/projects/oldmutual/screenshot-03-features.webp",
+      "/projects/agentbay/screenshot-01.png",
+      "/projects/agentbay/screenshot-02.png",
+      "/projects/agentbay/screenshot-03.png",
     ],
-    category: "fintech",
-    year: "2023-2024",
-    users: "25K+",
-    impact: "40% performance boost",
+    category: "personal",
+    year: "2024",
+    users: "5K+",
+    impact: "95% satisfaction",
   },
   {
     id: "kuza",
@@ -75,88 +170,6 @@ const projects: Project[] = [
     year: "2023",
     users: "15K+",
     impact: "60% faster transactions",
-  },
-  {
-    id: "lofty-corban",
-    title: "Lofty Corban Investment",
-    description:
-      "Investment management platform with portfolio analytics and trading capabilities",
-    tech: ["Flutter", "Firebase", "Real-time APIs", "Chart.js"],
-    achievements: [
-      "Built advanced analytics dashboard",
-      "Implemented real-time market data",
-      "Created portfolio optimization tools",
-      "Achieved 99.8% uptime",
-    ],
-    image: "📈",
-    backgroundImage: "/projects/lofty-corban/banner.png",
-    screenshots: [
-      "/projects/lofty-corban/screenshot-01-dashboard.jpg",
-      "/projects/lofty-corban/screenshot-02-profile.jpg",
-      "/projects/lofty-corban/screenshot-03-features.webp",
-    ],
-    category: "fintech",
-    year: "2024",
-    users: "8K+",
-    impact: "99.8% uptime",
-  },
-
-  // Crypto Apps Category
-  {
-    id: "bitlipa",
-    title: "BitLipa Crypto Platform",
-    description:
-      "Advanced crypto trading and wallet platform with multi-currency support",
-    tech: ["Flutter", "Node.js", "MongoDB", "Crypto APIs", "WebSocket"],
-    achievements: [
-      "Handled $1M+ in transactions",
-      "Built secure wallet infrastructure",
-      "Implemented real-time price tracking",
-      "Led development team of 5",
-    ],
-    image: "₿",
-    backgroundImage: "/projects/bitlipa/banner.png",
-    screenshots: [
-      "/projects/bitlipa/screenshot-01-wallet.jpg",
-      "/projects/bitlipa/screenshot-02-transactions.jpg",
-      "/projects/bitlipa/screenshot-03-exchange.webp",
-    ],
-    category: "crypto",
-    year: "2020-2021",
-    users: "12K+",
-    impact: "$1M+ transactions",
-  },
-
-  // Personal Apps Category
-  {
-    id: "agentbay",
-    title: "AgentBay",
-    description:
-      "AI-powered real estate platform connecting agents with clients through intelligent matching",
-    tech: [
-      "Flutter",
-      "AI/ML",
-      "Firebase",
-      "Google Maps API",
-      "Push Notifications",
-    ],
-    achievements: [
-      "Built AI property matching algorithm",
-      "Integrated real-time chat system",
-      "Implemented geolocation features",
-      "Achieved 95% user satisfaction",
-    ],
-    image: "🏠",
-    backgroundImage: "/projects/agentbay/banner.png",
-    screenshots: [
-      "/projects/agentbay/screenshot-01-dashboard.jpg",
-      "/projects/agentbay/screenshot-02-profile.jpg",
-      "/projects/agentbay/screenshot-03-features.webp",
-    ],
-    category: "personal",
-    year: "2024",
-    users: "5K+",
-    impact: "95% satisfaction",
   },
   {
     id: "mvest",
@@ -189,30 +202,55 @@ const projects: Project[] = [
     impact: "Smart alerts system",
   },
 
-  // Social Apps Category
+  // Fintech Apps Category
   {
-    id: "mash",
-    title: "Mash Social App",
+    id: "oldmutual",
+    title: "OldMutual Mobile App",
     description:
-      "Social engagement platform with improved UX and real-time interactions",
-    tech: ["Flutter", "Provider", "GitHub Actions", "Firebase", "Real-time DB"],
+      "Premium banking and investment app for OldMutual clients with advanced portfolio management",
+    tech: ["Flutter", "Firebase", "CI/CD", "Codemagic", "REST APIs"],
     achievements: [
-      "Improved UX by 27%",
-      "Built real-time messaging",
-      "Implemented social feed algorithms",
-      "Enhanced app performance",
+      "Implemented secure biometric authentication",
+      "Built real-time portfolio tracking",
+      "Optimized app performance by 40%",
+      "Integrated with core banking systems",
     ],
-    image: "�",
-    backgroundImage: "/projects/mash/banner.png",
+    image: "🏦",
+    backgroundImage: "/projects/oldmutual/banner.png",
     screenshots: [
-      "/projects/mash/screenshot-01-dashboard.jpg",
-      "/projects/mash/screenshot-02-profile.jpg",
-      "/projects/mash/screenshot-03-features.webp",
+      "/projects/oldmutual/screenshot-01-dashboard.jpg",
+      "/projects/oldmutual/screenshot-02-profile.jpg",
+      "/projects/oldmutual/screenshot-03-features.webp",
     ],
-    category: "social",
-    year: "2022-2023",
-    users: "20K+",
-    impact: "27% UX improvement",
+    category: "fintech",
+    year: "2023-2024",
+    users: "25K+",
+    impact: "40% performance boost",
+  },
+
+  {
+    id: "lofty-corban",
+    title: "Lofty Corban Investment",
+    description:
+      "Investment management platform with portfolio analytics and trading capabilities",
+    tech: ["Flutter", "Firebase", "Real-time APIs", "Chart.js"],
+    achievements: [
+      "Built advanced analytics dashboard",
+      "Implemented real-time market data",
+      "Created portfolio optimization tools",
+      "Achieved 99.8% uptime",
+    ],
+    image: "📈",
+    backgroundImage: "/projects/lofty-corban/banner.png",
+    screenshots: [
+      "/projects/lofty-corban/screenshot-01-dashboard.jpg",
+      "/projects/lofty-corban/screenshot-02-profile.jpg",
+      "/projects/lofty-corban/screenshot-03-features.webp",
+    ],
+    category: "fintech",
+    year: "2024",
+    users: "8K+",
+    impact: "99.8% uptime",
   },
 ];
 
@@ -242,6 +280,8 @@ function PortalModal({
 
 export default function ProjectShowcase() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [achievementModalOpen, setAchievementModalOpen] = useState(false);
+  const [achievementModalIndex, setAchievementModalIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -489,17 +529,10 @@ export default function ProjectShowcase() {
 
                 {/* Content Container */}
                 <div className="relative z-10 h-full flex flex-col p-4">
-                  {/* Header: Icon & Category */}
-                  <div className="flex items-center justify-between mb-3">
-                    <motion.div
-                      className="text-3xl filter drop-shadow-lg"
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {project.image}
-                    </motion.div>
+                  {/* Header: Category only, logo hidden */}
+                  <div className="flex items-center justify-end mb-3">
                     <motion.span
-                      className={`px-2 py-1 rounded-lg text-xs font-semibold border backdrop-blur-md bg-black/20 text-white border-white/30`}
+                      className="px-2 py-0.5 rounded-md text-[10px] font-semibold border backdrop-blur-md bg-white/10 text-white/60 border-white/20 tracking-wide uppercase"
                       whileHover={{ scale: 1.05 }}
                       transition={{ duration: 0.15 }}
                     >
@@ -659,7 +692,7 @@ export default function ProjectShowcase() {
                 style={{
                   position: "relative",
                   zIndex: 100000,
-                  maxWidth: "min(90vw, 900px)",
+                  maxWidth: "min(90vw, 550px)",
                   maxHeight: "min(85vh, 650px)",
                   height: "auto",
                 }}
@@ -785,13 +818,35 @@ export default function ProjectShowcase() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       {selectedProject.achievements.map(
                         (achievement, index) => (
-                          <motion.div
+                          <motion.button
                             key={index}
-                            className="flex items-start gap-2 p-2 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200 hover:border-green-300 hover:shadow-sm transition-all duration-300"
+                            type="button"
+                            className="flex items-start gap-2 p-2 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200 hover:border-green-300 hover:shadow-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-400"
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.5 + index * 0.1 }}
                             whileHover={{ scale: 1.01, x: 2 }}
+                            onClick={() => {
+                              if (
+                                selectedProject.screenshots &&
+                                selectedProject.screenshots[index]
+                              ) {
+                                setAchievementModalIndex(index);
+                                setAchievementModalOpen(true);
+                              }
+                            }}
+                            disabled={
+                              !(
+                                selectedProject.screenshots &&
+                                selectedProject.screenshots[index]
+                              )
+                            }
+                            title={
+                              selectedProject.screenshots &&
+                              selectedProject.screenshots[index]
+                                ? "View screenshot"
+                                : "No screenshot available"
+                            }
                           >
                             <span className="text-green-600 text-sm font-bold mt-0.5">
                               ✓
@@ -799,11 +854,41 @@ export default function ProjectShowcase() {
                             <span className="text-slate-700 font-medium text-sm">
                               {achievement}
                             </span>
-                          </motion.div>
+                            {selectedProject.screenshots &&
+                              selectedProject.screenshots[index] && (
+                                <svg
+                                  className="ml-auto w-4 h-4 text-green-400 opacity-70"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M15 10l4.553 2.276A2 2 0 0121 14.118V17a2 2 0 01-2 2H5a2 2 0 01-2-2v-2.882a2 2 0 01.447-1.842L8 10"
+                                  />
+                                </svg>
+                              )}
+                          </motion.button>
                         )
                       )}
                     </div>
                   </motion.div>
+
+                  {/* Achievement Screenshot Modal */}
+                  {achievementModalOpen && (
+                    <AchievementModal
+                      open={achievementModalOpen}
+                      onClose={() => setAchievementModalOpen(false)}
+                      screenshots={selectedProject.screenshots}
+                      index={achievementModalIndex}
+                      setIndex={setAchievementModalIndex}
+                      title={
+                        selectedProject.achievements[achievementModalIndex]
+                      }
+                    />
+                  )}
 
                   {/* Screenshots Gallery */}
                   {selectedProject.screenshots &&
