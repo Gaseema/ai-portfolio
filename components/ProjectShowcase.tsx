@@ -24,7 +24,7 @@ function AchievementModal({
 }: AchievementModalProps) {
   if (!open || !screenshots || screenshots.length === 0) return null;
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/70 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[100000] flex items-center justify-center bg-black/70 backdrop-blur-sm">
       <div className="relative bg-white rounded-2xl shadow-2xl max-w-xs sm:max-w-md md:max-w-lg w-full p-2 sm:p-4 flex flex-col items-center">
         <button
           className="absolute top-2 right-2 bg-black/10 hover:bg-black/20 rounded-full p-1.5 text-slate-700"
@@ -162,9 +162,9 @@ const projects: Project[] = [
     image: "💳",
     backgroundImage: "/projects/kuza/banner.png",
     screenshots: [
-      "/projects/kuza/screenshot-01-wallet.jpg",
-      "/projects/kuza/screenshot-02-transactions.jpg",
-      "/projects/kuza/screenshot-03-exchange.webp",
+      "/projects/kuza/screenshot-1.png",
+      "/projects/kuza/screenshot-2.png",
+      "/projects/kuza/screenshot-3.png",
     ],
     category: "fintech",
     year: "2023",
@@ -282,6 +282,8 @@ export default function ProjectShowcase() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [achievementModalOpen, setAchievementModalOpen] = useState(false);
   const [achievementModalIndex, setAchievementModalIndex] = useState(0);
+  const [screenshotViewerOpen, setScreenshotViewerOpen] = useState(false);
+  const [screenshotViewerIndex, setScreenshotViewerIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -877,18 +879,16 @@ export default function ProjectShowcase() {
                   </motion.div>
 
                   {/* Achievement Screenshot Modal */}
-                  {achievementModalOpen && (
+                  <PortalModal isOpen={screenshotViewerOpen}>
                     <AchievementModal
-                      open={achievementModalOpen}
-                      onClose={() => setAchievementModalOpen(false)}
-                      screenshots={selectedProject.screenshots}
-                      index={achievementModalIndex}
-                      setIndex={setAchievementModalIndex}
-                      title={
-                        selectedProject.achievements[achievementModalIndex]
-                      }
+                      open={screenshotViewerOpen}
+                      onClose={() => setScreenshotViewerOpen(false)}
+                      screenshots={selectedProject?.screenshots}
+                      index={screenshotViewerIndex}
+                      setIndex={setScreenshotViewerIndex}
+                      title={selectedProject?.title || ""}
                     />
-                  )}
+                  </PortalModal>
 
                   {/* Screenshots Gallery */}
                   {selectedProject.screenshots &&
@@ -923,6 +923,10 @@ export default function ProjectShowcase() {
                                   transition: { duration: 0.2 },
                                 }}
                                 whileTap={{ scale: 0.95 }}
+                                onClick={() => {
+                                  setScreenshotViewerIndex(index);
+                                  setScreenshotViewerOpen(true);
+                                }}
                               >
                                 <img
                                   src={screenshot}
@@ -945,6 +949,9 @@ export default function ProjectShowcase() {
           )}
         </AnimatePresence>
       </PortalModal>
+
+      {/* Screenshot Viewer Modal */}
+      {/* (Now handled by PortalModal + AchievementModal above) */}
 
       {/* Additional Info */}
       <div className="mt-4 text-xs text-slate-600 text-center">
