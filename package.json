@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "deploy": "bash deploy.sh",
-    "server-setup": "bash deployment/setup-server.sh"
+    "server-setup": "bash deployment/setup-server.sh",
+    "optimize-images": "node scripts/optimize-images.js",
+    "test-groq": "node scripts/test-groq.js"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.10",
@@ -32,6 +34,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/three": "^0.178.1",
+    "dotenv": "^17.2.1",
     "eslint": "^9",
     "eslint-config-next": "15.4.5",
     "tailwindcss": "^4",

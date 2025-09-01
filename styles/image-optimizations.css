@@ -1,0 +1,91 @@
+/* Image optimization styles */
+
+/* Improve image loading performance */
+img {
+  /* Enable hardware acceleration for smoother animations */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize image containers */
+.image-container {
+  /* Use contain for better performance */
+  contain: layout style paint;
+  /* Enable GPU acceleration */
+  will-change: transform;
+}
+
+/* Smooth image transitions */
+.image-fade-in {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.image-fade-in.loaded {
+  opacity: 1;
+}
+
+/* Optimize scrolling performance */
+.scroll-container {
+  /* Enable momentum scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+  /* Optimize scrolling performance */
+  scroll-behavior: smooth;
+  /* Use contain for better performance */
+  contain: layout style paint;
+}
+
+/* Reduce layout shifts during image loading */
+.aspect-ratio-container {
+  position: relative;
+  width: 100%;
+  height: 0;
+  overflow: hidden;
+}
+
+.aspect-ratio-container.aspect-9-16 {
+  padding-bottom: 177.78%; /* 16/9 * 100% */
+}
+
+.aspect-ratio-container > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Optimize blur placeholders */
+.blur-placeholder {
+  filter: blur(10px);
+  transform: scale(1.1);
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.blur-placeholder.loaded {
+  filter: blur(0);
+  transform: scale(1);
+}
+
+/* Improve animation performance */
+@media (prefers-reduced-motion: no-preference) {
+  .smooth-transform {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smooth-transform {
+    transition: none;
+  }
+}
+
+/* Optimize for different screen densities */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .high-dpi-optimized {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}

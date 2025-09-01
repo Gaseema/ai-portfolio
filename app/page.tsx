@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useGitHubStars } from "@/hooks/useGitHubStars";
 import { TalentModal, InfoModal } from "@/components/ui/modals";
@@ -11,8 +10,8 @@ import { HeroSection } from "@/components/sections";
 export default function HomePage() {
   const [showTalentModal, setShowTalentModal] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [isOrbActive, setIsOrbActive] = useState(false);
-  const [isOrbListening, setIsOrbListening] = useState(false);
+  const [isOrbActive] = useState(false);
+  const [isOrbListening] = useState(false);
   const [orbPulse, setOrbPulse] = useState(false);
   const orbRef = useRef<HTMLDivElement>(null);
   const { totalStars, repoCount, loading } = useGitHubStars();

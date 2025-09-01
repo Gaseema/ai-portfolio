@@ -90,9 +90,10 @@ export async function callGroq(messages: { role: string; content: string }[]) {
         Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "llama3-8b-8192", // Updated to a more commonly available model
+        model: "llama-3.1-8b-instant", // Updated to current available model
         messages: messagesWithSystem,
         temperature: 0.7,
+        max_tokens: 1000, // Add token limit for better control
       }),
     });
 
@@ -103,12 +104,23 @@ export async function callGroq(messages: { role: string; content: string }[]) {
         statusText: res.statusText,
         error: errorText,
       });
+
+      // Handle specific error cases
+      if (res.status === 401) {
+        throw new Error("Invalid API key. Please check your GROQ_API_KEY.");
+      } else if (res.status === 429) {
+        throw new Error("Rate limit exceeded. Please try again later.");
+      } else if (res.status === 400) {
+        throw new Error("Bad request. Please check your message format.");
+      }
+
       throw new Error(`Groq API request failed (${res.status}): ${errorText}`);
     }
 
     const data = await res.json();
 
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      console.error("Invalid API response:", data);
       throw new Error("Invalid response format from Groq API");
     }
 

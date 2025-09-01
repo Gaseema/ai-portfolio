@@ -3,6 +3,12 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import {
+  generateBlurDataURL,
+  getCategoryBlurColor,
+  getImageSizes,
+} from "@/lib/image-utils";
 
 // Modal for viewing achievement screenshots
 type AchievementModalProps = {
@@ -90,11 +96,19 @@ function AchievementModal({
             </svg>
           </button>
         </div>
-        <img
-          src={screenshots[index]}
-          alt={title + " screenshot"}
-          className="rounded-xl max-h-[60vh] w-auto object-contain border border-slate-200 shadow"
-        />
+        <div className="relative max-h-[60vh] w-auto">
+          <Image
+            src={screenshots[index]}
+            alt={`${title} screenshot ${index + 1}`}
+            width={600}
+            height={400}
+            className="rounded-xl object-contain border border-slate-200 shadow"
+            quality={90}
+            priority
+            placeholder="blur"
+            blurDataURL={generateBlurDataURL("#f8fafc")}
+          />
+        </div>
       </div>
     </div>
   );
@@ -289,44 +303,10 @@ export default function ProjectShowcase() {
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [imagesLoaded, setImagesLoaded] = useState<Set<string>>(new Set());
 
-  // Preload images with priority for first few images
+  // Track image loading for skeleton states
   useEffect(() => {
-    const preloadImages = () => {
-      projects.forEach((project, index) => {
-        if (project.backgroundImage.startsWith("/")) {
-          const img = document.createElement("img");
-
-          // Add priority loading for first 3 images (likely visible in viewport)
-          if (index < 3) {
-            img.loading = "eager";
-            img.fetchPriority = "high";
-          }
-
-          img.onload = () => {
-            setImagesLoaded((prev) =>
-              new Set(prev).add(project.backgroundImage)
-            );
-          };
-          img.onerror = () => {
-            console.warn(`Failed to preload image: ${project.backgroundImage}`);
-          };
-          img.src = project.backgroundImage;
-        }
-
-        // Also preload screenshots (lower priority)
-        if (project.screenshots) {
-          project.screenshots.forEach((screenshot) => {
-            const img = document.createElement("img");
-            img.loading = "lazy";
-            img.src = screenshot;
-          });
-        }
-      });
-    };
-
-    // Delay preloading slightly to not block initial render
-    const timer = setTimeout(preloadImages, 100);
-    return () => clearTimeout(timer);
+    // Initialize with empty set - images will be added as they load
+    setImagesLoaded(new Set());
   }, []);
 
   // Check scroll position
@@ -507,24 +487,32 @@ export default function ProjectShowcase() {
                 transition={{ duration: 0.2 }}
                 className="relative bg-white backdrop-blur-sm rounded-2xl cursor-pointer border border-slate-200/60 hover:border-slate-300/80 hover:shadow-xl transition-all duration-500 group overflow-hidden aspect-[9/16] w-full"
               >
-                {/* Background Image */}
-                <div
-                  className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-500 group-hover:scale-105 ${
-                    imagesLoaded.has(project.backgroundImage)
-                      ? "opacity-100"
-                      : "opacity-0 bg-gradient-to-br from-slate-100 to-slate-200"
-                  }`}
-                  style={{
-                    backgroundImage: project.backgroundImage.startsWith("/")
-                      ? `url('${project.backgroundImage}')`
-                      : project.backgroundImage,
-                  }}
-                />
+                {/* Optimized Background Image */}
+                <div className="absolute inset-0 overflow-hidden">
+                  <Image
+                    src={project.backgroundImage}
+                    alt={`${project.title} preview`}
+                    fill
+                    sizes={getImageSizes("card")}
+                    className="object-cover transition-all duration-500 group-hover:scale-105"
+                    priority={index < 3} // Priority load for first 3 images
+                    quality={85}
+                    placeholder="blur"
+                    blurDataURL={generateBlurDataURL(
+                      getCategoryBlurColor(project.category)
+                    )}
+                    onLoad={() => {
+                      setImagesLoaded((prev) =>
+                        new Set(prev).add(project.backgroundImage)
+                      );
+                    }}
+                  />
 
-                {/* Loading skeleton for background image */}
-                {!imagesLoaded.has(project.backgroundImage) && (
-                  <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 animate-pulse" />
-                )}
+                  {/* Loading skeleton */}
+                  {!imagesLoaded.has(project.backgroundImage) && (
+                    <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 animate-pulse" />
+                  )}
+                </div>
 
                 {/* Black Gradient Overlay for Text Readability */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
@@ -724,14 +712,18 @@ export default function ProjectShowcase() {
 
                 {/* Banner Section */}
                 <div className="relative h-32 md:h-40 overflow-hidden flex-shrink-0">
-                  <div
-                    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                    style={{
-                      backgroundImage:
-                        selectedProject.backgroundImage.startsWith("/")
-                          ? `url('${selectedProject.backgroundImage}')`
-                          : selectedProject.backgroundImage,
-                    }}
+                  <Image
+                    src={selectedProject.backgroundImage}
+                    alt={`${selectedProject.title} banner`}
+                    fill
+                    sizes={getImageSizes("modal")}
+                    className="object-cover"
+                    priority
+                    quality={90}
+                    placeholder="blur"
+                    blurDataURL={generateBlurDataURL(
+                      getCategoryBlurColor(selectedProject.category)
+                    )}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
 
